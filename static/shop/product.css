@@ -1,0 +1,133 @@
+/* ULTRA-PREMIUM PRODUCT LISTING STYLES */
+
+:root {
+    --arena-black: #08090B;
+    --victory-red: #D90429;
+    --championship-gold: #F4B400;
+    --ice-white: #F8FAFC;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-blur: blur(20px);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --victory-gradient: linear-gradient(135deg, #D90429, #F4B400);
+    --premium-transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+body {
+    background-color: var(--arena-black);
+    color: var(--ice-white);
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+
+/* CINEMATIC HERO HEADER */
+.page-header {
+    background: radial-gradient(circle at 50% 100%, rgba(217, 4, 41, 0.2), transparent 70%);
+    padding: 120px 0 80px;
+    text-align: center;
+    border-bottom: 1px solid var(--glass-border);
+    position: relative;
+}
+
+.page-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3.5rem, 12vw, 7rem);
+    letter-spacing: 12px;
+    margin-bottom: 0;
+    text-transform: uppercase;
+    background: linear-gradient(to bottom, #fff, #888);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 30px rgba(217, 4, 41, 0.3));
+}
+
+/* LUXURY FILTER BAR */
+#filterSection {
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 30px !important;
+    margin-top: -35px;
+    z-index: 100;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+}
+
+.category-link {
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    transition: var(--premium-transition);
+    border: 1px solid transparent !important;
+}
+
+.category-link:hover {
+    border-color: var(--victory-red) !important;
+    transform: translateY(-2px);
+}
+
+/* ARENA PRODUCT CARDS */
+.product-card {
+    background: #0D0E11 !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 24px !important;
+    padding: 10px;
+    transition: var(--premium-transition) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    border-color: var(--championship-gold) !important;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 20px rgba(217, 4, 41, 0.2) !important;
+}
+
+.card-img-container {
+    background: linear-gradient(145deg, #15171C, #08090B) !important;
+    border-radius: 20px !important;
+    position: relative;
+    transition: var(--premium-transition);
+}
+
+.product-card:hover .card-img-container {
+    transform: scale(0.98);
+}
+
+.product-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    letter-spacing: -0.5px;
+    color: var(--ice-white) !important;
+    margin-top: 15px;
+}
+
+.product-price {
+    color: var(--championship-gold) !important;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+}
+
+/* SECURE DROP CTA */
+.btn-add-cart {
+    background: var(--victory-gradient) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 14px !important;
+    font-weight: 900 !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 15px !important;
+    transition: var(--premium-transition) !important;
+    box-shadow: 0 10px 20px rgba(217, 4, 41, 0.2) !important;
+}
+
+.btn-add-cart:hover {
+    letter-spacing: 4px;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(217, 4, 41, 0.4) !important;
+}

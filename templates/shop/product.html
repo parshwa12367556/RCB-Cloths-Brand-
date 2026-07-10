@@ -1,0 +1,100 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Shop — ARENA Sports Luxury{% endblock %}
+
+{% block content %}
+<!-- CINEMATIC PAGE HEADER -->
+<div class="page-header">
+    <div class="container">
+        <h1>THE ARENA DROP</h1>
+        <p class="opacity-50 text-uppercase fw-bold small" style="letter-spacing:3px;">Forged for Glory. Built for the Elite.</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- GLASSMORPHISM FILTER BAR -->
+    <div class="filter-bar d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 p-4" id="filterSection">
+        <div class="d-flex overflow-auto w-100 mb-3 mb-md-0 pb-2 pb-md-0 align-items-center" style="gap:12px;scrollbar-width:none;">
+            <span class="fw-bold text-muted me-2 text-nowrap"><i class="fas fa-th-large me-1"></i> Sports:</span>
+            <a href="{{ url_for('product_bp.products', price=request.args.get('price'), q=request.args.get('q')) }}" class="btn {{ 'btn-danger' if not request.args.get('category') else 'btn-outline-danger' }} rounded-pill text-nowrap category-link">All</a>
+            {% for cat in categories %}
+            <a href="{{ url_for('product_bp.products', category=cat.name, price=request.args.get('price'), q=request.args.get('q')) }}" class="btn {{ 'btn-danger' if request.args.get('category') == cat.name else 'btn-outline-danger' }} rounded-pill text-nowrap category-link">{{ cat.name }}</a>
+            {% endfor %}
+        </div>
+        <div class="d-flex align-items-center ms-md-3 flex-shrink-0">
+            <form action="{{ url_for('product_bp.products') }}" method="GET" class="m-0 d-flex gap-2 align-items-center" id="filterForm">
+                {% if request.args.get('category') %}<input type="hidden" name="category" value="{{ request.args.get('category') }}">{% endif %}
+                {% if request.args.get('q') %}<input type="hidden" name="q" value="{{ request.args.get('q') }}">{% endif %}
+                <i class="fas fa-tag text-muted"></i>
+                <select class="arena-input rounded-pill" name="price" id="priceFilter" style="min-width:160px;padding:10px 16px;height:auto;">
+                    <option value="all" {% if request.args.get('price')=='all' %}selected{% endif %}>All Prices</option>
+                    <option value="under_200" {% if request.args.get('price')=='under_200' %}selected{% endif %}>Under ₹200</option>
+                    <option value="200_500" {% if request.args.get('price')=='200_500' %}selected{% endif %}>₹200 - ₹500</option>
+                    <option value="500_1000" {% if request.args.get('price')=='500_1000' %}selected{% endif %}>₹500 - ₹1000</option>
+                    <option value="above_1000" {% if request.args.get('price')=='above_1000' %}selected{% endif %}>Above ₹1000</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
+    <!-- PRODUCTS GRID -->
+    <div class="row g-4" id="productsGrid">
+        {% if pagination.items %}
+        {% for product in pagination.items %}
+        <div class="col-lg-3 col-md-6">
+            <div class="product-card">
+                <a href="{{ url_for('product_bp.product_detail', id=product.id) }}" class="text-decoration-none">
+                    <div class="card-img-container">
+                        {% if product.category == 'Jerseys' %}<span class="badge-collection badge-championship">Championship</span>{% endif %}
+                        {% if 'Gold' in product.name %}<span class="badge-collection badge-gold-drop">Gold Drop</span>{% endif %}
+                        <img src="{% if product.image %}{% if product.image.startswith('http') %}{{ product.image }}{% else %}{{ url_for('static', filename='images/products/' + product.image) }}{% endif %}{% else %}https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400{% endif %}" alt="{{ product.name }}">
+                        {% if product.stock <= 0 %}<span class="badge-collection badge-sold-out">Sold Out</span>{% endif %}
+                    </div>
+                </a>
+                <div class="px-2 pb-3">
+                    <span class="craft-tag">Authentic Matchday Gear</span>
+                    <h5 class="product-title">{{ product.name }}</h5>
+                    <div class="mb-2 text-warning small">
+                        {% set tr = product.reviews|length %}
+                        {% if tr > 0 %}{% set avg = (product.reviews | map(attribute='rating') | sum / tr) | round %}{% for i in range(5) %}<i class="fas fa-star{% if i >= avg %}-o text-muted{% endif %}"></i>{% endfor %}<span class="text-muted-arena ms-1">({{ tr }})</span>
+                        {% else %}{% for i in range(5) %}<i class="far fa-star"></i>{% endfor %}{% endif %}
+                    </div>
+                    <div class="product-price">₹{{ "%.0f"|format(product.price) }}</div>
+                    <form action="{{ url_for('customer.add_to_cart', product_id=product.id) }}" method="POST">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn-add-cart mt-2 w-100" {% if product.stock <= 0 %}disabled{% endif %}><i class="fas fa-shopping-bag me-2"></i> SECURE DROP</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-12 text-center mt-5"><h4 class="opacity-50">ARENA EMPTY // CHECK BACK SOON</h4></div>
+        {% endif %}
+    </div>
+
+    <!-- PAGINATION -->
+    {% if pagination.pages > 1 %}
+    <nav class="mt-5 mb-5">
+        <div class="arena-pagination">
+            {% if pagination.has_prev %}<a href="{{ url_for('product_bp.products', page=pagination.prev_num, category=request.args.get('category'), price=request.args.get('price'), q=request.args.get('q')) }}"><i class="fas fa-chevron-left"></i></a>{% endif %}
+            {% for page_num in pagination.iter_pages(left_edge=1,right_edge=1,left_current=2,right_current=2) %}
+                {% if page_num %}<a href="{{ url_for('product_bp.products', page=page_num, category=request.args.get('category'), price=request.args.get('price'), q=request.args.get('q')) }}" class="{% if page_num == pagination.page %}active{% endif %}">{{ page_num }}</a>
+                {% else %}<span>...</span>{% endif %}
+            {% endfor %}
+            {% if pagination.has_next %}<a href="{{ url_for('product_bp.products', page=pagination.next_num, category=request.args.get('category'), price=request.args.get('price'), q=request.args.get('q')) }}"><i class="fas fa-chevron-right"></i></a>{% endif %}
+        </div>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+    const priceFilter=document.getElementById('priceFilter');
+    if(priceFilter){
+        priceFilter.addEventListener('change',function(){document.getElementById('filterForm').submit();});
+    }
+});
+</script>
+{% endblock %}

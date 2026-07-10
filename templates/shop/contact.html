@@ -1,0 +1,30 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Contact — ARENA Sports Luxury{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-5 stagger-children" style="padding-top:60px;">
+        <div class="col-lg-5">
+            <span class="text-gold fw-bold mb-3 d-block" style="letter-spacing:4px;">MATCHDAY SUPPORT</span>
+            <h1 class="giant-title mb-4" style="font-size:clamp(2rem,5vw,3.5rem);">CONNECT WITH THE <span style="color:var(--electric-blue);">ARENA.</span></h1>
+            <p class="opacity-50 mb-5">Our squad is on standby for jersey customization, order drops, and arena logistics.</p>
+            <div class="row g-3">
+                <div class="col-6"><div class="glass-card p-4 text-center"><i class="fas fa-envelope-open-text fa-2x text-gold mb-3"></i><h6>EMAIL</h6><p class="small opacity-50">support@arena.com</p></div></div>
+                <div class="col-6"><div class="glass-card p-4 text-center"><i class="fas fa-headset fa-2x text-gold mb-3"></i><h6>HELPLINE</h6><p class="small opacity-50">+1 800 ARENA</p></div></div>
+            </div>
+        </div>
+        <div class="col-lg-7">
+            <div class="glass-card p-5">
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-4"><label class="small fw-bold text-uppercase opacity-50 mb-2">Name</label><input type="text" class="arena-input" placeholder="ARENA IDENTITY"></div>
+                        <div class="col-md-6 mb-4"><label class="small fw-bold text-uppercase opacity-50 mb-2">Email</label><input type="email" class="arena-input" placeholder="FAN@ARENA.COM"></div>
+                    </div>
+                    <div class="mb-4"><label class="small fw-bold text-uppercase opacity-50 mb-2">Message</label><textarea class="arena-input" rows="5" placeholder="MESSAGE FROM THE STANDS..."></textarea></div>
+                    <button type="submit" class="btn-arena">SEND TO THE ARENA <i class="fas fa-paper-plane ms-2"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

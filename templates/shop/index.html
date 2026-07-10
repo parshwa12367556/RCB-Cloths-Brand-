@@ -1,0 +1,164 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}ARENA — Global Multi-Sports Luxury Platform{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero-section">
+    <div class="hero-glow" style="top:20%;left:-10%;"></div>
+    <div id="heroGlow"></div>
+    <div class="container position-relative" style="z-index:2;">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-7">
+                <span class="badge rounded-pill mb-3 px-3 py-2 text-dark fw-bold" style="background:linear-gradient(135deg,#F4B400,#D4A017);">🏆 ELITE PERFORMANCE WEAR</span>
+                <h1 class="giant-title hero-animate-title" style="font-family:'Bebas Neue',cursive;letter-spacing:4px;">WEAR THE<br><span class="text-glow-gold">GAME.</span><br>ENTER THE<br><span style="color:var(--victory-red);">ARENA.</span></h1>
+                <p class="lead opacity-75 mb-5 fs-5 hero-animate-subtitle" style="max-width:600px;">Not just a jersey. A legacy. Experience high-octane stadium energy and luxury streetwear from every sport, every league.</p>
+                <div class="d-flex gap-3 flex-wrap hero-animate-cta">
+                    <a href="{{ url_for('product_bp.products') }}" class="btn-arena px-5 py-3 fs-5">Shop The Drop</a>
+                    <a href="#categories" class="btn-outline-arena px-5 py-3 fs-5">Explore Sports</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SPORTS CATEGORIES -->
+<section id="categories" class="py-5" style="background:rgba(0,0,0,0.3);">
+    <div class="container py-5">
+        <h2 class="text-center giant-title mb-5" style="font-size:clamp(2rem,6vw,4rem);">THE <span class="text-gold">ARENA</span> SPORTS</h2>
+        <p class="text-center text-muted-arena mb-5" style="max-width:600px;margin:0 auto 40px;">From cricket to esports, football to Formula 1 — every sport, every league.</p>
+        <div class="row g-4 stagger-children">
+            {% for sport in ['Cricket','Football','IPL','NBA','Kabaddi','Formula 1','UFC','Esports','Tennis'] %}
+            <div class="col-lg-4 col-md-6">
+                <a href="{{ url_for('product_bp.products', category=sport) }}" class="text-decoration-none">
+                    <div class="membership-card">
+                        <i class="fas fa-{% if sport=='Cricket' %}baseball-ball{% elif sport=='Football' %}futbol{% elif sport=='IPL' %}crown{% elif sport=='NBA' %}basketball-ball{% elif sport=='Formula 1' %}flag-checkered{% elif sport=='UFC' %}fist-raised{% elif sport=='Esports' %}gamepad{% elif sport=='Tennis' %}table-tennis{% else %}trophy{% endif %}"></i>
+                        <h6>{{ sport | upper }}</h6>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="py-5">
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
+            <div>
+                <h2 class="giant-title mb-0" style="font-size:clamp(1.5rem,5vw,3rem);">CHAMPIONSHIP <span class="text-gold">DROPS</span></h2>
+                <p class="text-muted-arena">Engineered for glory. Worn by legends.</p>
+            </div>
+            <a href="{{ url_for('product_bp.products') }}" class="btn-ghost">View All →</a>
+        </div>
+        <div class="row g-4 stagger-children">
+            {% if products %}{% for product in products[:4] %}
+            <div class="col-lg-3 col-md-6">
+                <div class="product-card">
+                    <a href="{{ url_for('product_bp.product_detail', id=product.id) }}" class="text-decoration-none">
+                        <div class="card-img-container">
+                            {% if product.category in ['Jerseys','Cricket'] %}<span class="badge-collection badge-championship">Championship</span>{% endif %}
+                            <img src="{% if product.image %}{% if product.image.startswith('http') %}{{ product.image }}{% else %}{{ url_for('static', filename='images/products/' + product.image) }}{% endif %}{% else %}https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400{% endif %}" alt="{{ product.name }}">
+                        </div>
+                    </a>
+                    <div class="px-2 pb-3">
+                        <span class="craft-tag">{{ product.category or 'Authentic Gear' }}</span>
+                        <h5 class="product-title">{{ product.name }}</h5>
+                        <div class="mb-2 text-warning small">{% if product.reviews %}{% set avg = (product.reviews | map(attribute='rating') | sum / product.reviews|length) | round %}{% for i in range(5) %}<i class="fas fa-star{% if i >= avg %}-o text-muted{% endif %}"></i>{% endfor %}<span class="text-muted-arena ms-1">({{ product.reviews|length }})</span>{% else %}{% for i in range(5) %}<i class="far fa-star"></i>{% endfor %}{% endif %}</div>
+                        <div class="product-price">₹{{ "%.0f"|format(product.price) }}</div>
+                        <button onclick="addToCart({{ product.id }})" class="btn-add-cart mt-3 w-100">Secure Your Drop</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}{% endif %}
+        </div>
+    </div>
+</section>
+
+{% if ai_jerseys %}
+<!-- AI RECOMMENDATIONS -->
+<section class="py-5" style="background:rgba(0,0,0,0.3);">
+    <div class="container py-5">
+        <div class="text-center mb-5 reveal-fade">
+            <span class="text-gold text-uppercase fw-bold" style="letter-spacing:4px;font-size:0.75rem;">Precision Engineering</span>
+            <h2 class="giant-title" style="font-size:clamp(1.5rem,5vw,3rem);">AI-DRIVEN <span class="text-gold">PICKS</span></h2>
+            <p class="text-muted-arena" style="max-width:500px;margin:0 auto;">Our neural engine curates the perfect matchday silhouette.</p>
+        </div>
+        <div class="row g-4 justify-content-center stagger-children">
+            {% for product in ai_jerseys[:3] %}
+            <div class="col-lg-4 col-md-6">
+                <div class="ai-recommendation-card text-center position-relative">
+                    <div class="ai-scanner-line"></div>
+                    <div class="mb-4"><img src="{% if product.image %}{% if product.image.startswith('http') %}{{ product.image }}{% else %}{{ url_for('static', filename='images/products/' + product.image) }}{% endif %}{% else %}https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400{% endif %}" class="img-fluid rounded-4" alt="{{ product.name }}" style="height:250px;object-fit:cover;width:100%;"></div>
+                    <h4 class="fw-bold mb-2" style="font-family:var(--font-sports);letter-spacing:2px;">{{ product.name }}</h4>
+                    <p class="text-gold fw-bold mb-4" style="font-family:var(--font-sports);font-size:1.5rem;">₹{{ "%.0f"|format(product.price) }}</p>
+                    <div class="d-flex justify-content-center gap-2">
+                        <a href="{{ url_for('product_bp.product_detail', id=product.id) }}" class="btn-outline-arena" style="padding:10px 20px;font-size:0.7rem;">View Intel</a>
+                        <button onclick="addToCart({{ product.id }})" class="btn-arena btn-sm-arena">Secure Drop</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- LEGACY ROOM -->
+<section class="py-5">
+    <div class="container py-5 text-center">
+        <h2 class="giant-title mb-5" style="font-size:clamp(2rem,6vw,4rem);">THE <span class="text-gold">LEGACY</span> ROOM</h2>
+        <div class="row g-4 justify-content-center stagger-children">
+            <div class="col-md-5"><div class="trophy-card p-5" style="background:linear-gradient(135deg,#1a1a1c,#000);border:1px solid rgba(244,180,0,0.1);border-radius:24px;text-align:center;"><i class="fas fa-trophy fa-5x text-gold mb-3" style="filter:drop-shadow(0 0 20px rgba(244,180,0,0.3));"></i><h3 class="text-white mb-0" style="font-family:var(--font-sports);letter-spacing:3px;">WORLD CUP</h3><p class="text-gold">Collection</p></div></div>
+            <div class="col-md-5"><div class="trophy-card p-5" style="background:linear-gradient(135deg,#1a1a1c,#000);border:2px solid var(--championship-gold);border-radius:24px;text-align:center;"><i class="fas fa-crown fa-5x text-gold mb-3"></i><h3 class="text-white mb-0" style="font-family:var(--font-sports);letter-spacing:3px;">LEGENDS</h3><p class="text-gold">Dynasty</p></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ATHLETE SHOWCASE -->
+<section class="py-5" style="background:rgba(0,0,0,0.3);">
+    <div class="container py-5">
+        <h2 class="giant-title text-center mb-5" style="font-size:clamp(2rem,5vw,3rem);">THE <span class="text-gold">ELITE</span> ROSTER</h2>
+        <div class="row g-4 stagger-children">
+            <div class="col-md-4"><div class="athlete-card"><img src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80" alt="Athlete"><div class="athlete-overlay"><h3 class="athlete-name">VIRAT KOHLI</h3><p class="athlete-quote">"Loyalty is victory."</p></div></div></div>
+            <div class="col-md-4"><div class="athlete-card"><img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80" alt="Athlete"><div class="athlete-overlay"><h3 class="athlete-name">C. RONALDO</h3><p class="athlete-quote">"Excellence is a habit."</p></div></div></div>
+            <div class="col-md-4"><div class="athlete-card"><img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80" alt="Athlete"><div class="athlete-overlay"><h3 class="athlete-name">LEBRON JAMES</h3><p class="athlete-quote">"Strive for greatness."</p></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- LIMITED EDITION -->
+<section class="py-5">
+    <div class="container">
+        <div class="rounded-5 p-5 text-white text-center position-relative overflow-hidden" style="background:linear-gradient(135deg,var(--victory-red),var(--championship-gold));">
+            <div class="position-absolute opacity-10" style="bottom:-50px;right:-50px;font-size:300px;"><i class="fas fa-crown"></i></div>
+            <span class="badge bg-white text-dark rounded-pill px-3 py-2 mb-3 fw-bold">Limited Edition</span>
+            <h2 class="giant-title mb-2" style="font-size:clamp(2rem,5vw,3.5rem);">GOLD COLLECTION</h2>
+            <p class="fs-5 mb-5">Only 500 pieces worldwide.</p>
+            <div class="d-flex justify-content-center gap-4 mb-5 flex-wrap" id="countdown" data-target="2026-09-01T00:00:00">
+                <div class="text-center"><h3 id="days" class="fw-bold mb-0" style="font-family:var(--font-sports);font-size:2.5rem;">00</h3><small>Days</small></div>
+                <div class="text-center"><h3 id="hours" class="fw-bold mb-0" style="font-family:var(--font-sports);font-size:2.5rem;">00</h3><small>Hours</small></div>
+                <div class="text-center"><h3 id="mins" class="fw-bold mb-0" style="font-family:var(--font-sports);font-size:2.5rem;">00</h3><small>Minutes</small></div>
+                <div class="text-center"><h3 id="secs" class="fw-bold mb-0" style="font-family:var(--font-sports);font-size:2.5rem;">00</h3><small>Seconds</small></div>
+            </div>
+            <a href="{{ url_for('product_bp.products') }}" class="btn-arena px-5 py-3" style="background:white;color:var(--arena-black);">Secure Yours Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="py-5" style="background:rgba(0,0,0,0.3);">
+    <div class="container text-center py-4">
+        <h2 class="giant-title mb-3" style="font-size:clamp(1.5rem,4vw,2.5rem);">JOIN THE <span class="text-gold">INNER CIRCLE</span></h2>
+        <p class="text-muted-arena mb-5" style="max-width:500px;margin:0 auto 30px;">Access gold drops, exclusive merch, arena invites.</p>
+        <form class="d-flex justify-content-center gap-2 mx-auto flex-wrap" style="max-width:500px;" onsubmit="return handleSubscribe(event)">
+            <input type="email" id="newsEmail" class="arena-input" placeholder="Enter your email" required style="flex:1;max-width:350px;">
+            <button type="submit" class="btn-arena">Subscribe →</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>function handleSubscribe(e){e.preventDefault();const email=document.getElementById('newsEmail')?.value;if(email){if(typeof showArenaToast==='function')showArenaToast('Welcome to the Arena!');document.getElementById('newsEmail').value='';}return false;}</script>
+{% endblock %}

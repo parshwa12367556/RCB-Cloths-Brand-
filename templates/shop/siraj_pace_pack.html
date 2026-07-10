@@ -1,0 +1,102 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Pace Pack — ARENA Sports Luxury{% endblock %}
+
+{% block extra_css %}
+<style>
+    .pace-hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .pace-title {
+        font-size: clamp(4rem, 15vw, 10rem);
+        line-height: 0.8;
+        text-transform: uppercase;
+        font-weight: 900;
+        letter-spacing: -5px;
+        transform: skewX(-10deg);
+        font-family: var(--font-display);
+    }
+    .lightning-glow {
+        color: var(--electric-blue);
+        text-shadow: 0 0 10px rgba(0, 102, 255, 0.5), 0 0 20px rgba(0, 102, 255, 0.3);
+        animation: pace-flicker 3s infinite;
+    }
+    .speed-streak {
+        position: absolute;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--electric-blue), transparent);
+        width: 100%;
+        opacity: 0.3;
+        animation: streak-move 0.8s linear infinite;
+    }
+    .miyan-magic {
+        position: absolute;
+        bottom: 10%;
+        right: 5%;
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: 5px;
+        color: var(--electric-blue);
+    }
+    @keyframes pace-flicker {
+        0%, 100% { opacity: 1; filter: brightness(1); }
+        92% { opacity: 1; }
+        93% { opacity: 0.5; filter: brightness(2); }
+        94% { opacity: 1; }
+    }
+    @keyframes streak-move {
+        from { transform: translateX(-100%) skewX(-45deg); }
+        to { transform: translateX(100%) skewX(-45deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="pace-hero">
+    <div class="speed-streak" style="top: 20%; animation-duration: 0.5s;"></div>
+    <div class="speed-streak" style="top: 50%; animation-duration: 1.2s; opacity: 0.1;"></div>
+    <div class="speed-streak" style="top: 80%; animation-duration: 0.7s;"></div>
+
+    <div class="container position-relative" style="z-index:2;">
+        <div class="row">
+            <div class="col-lg-8">
+                <h1 class="pace-title">HYPER<br><span class="lightning-glow">PACE</span></h1>
+                <p class="lead mt-4 opacity-50 fw-bold" style="letter-spacing:2px;">THE SIGNATURE ARCHIVE // 2026</p>
+                <div class="mt-5">
+                    <a href="#pace-products" class="btn-arena px-5 py-3">SECURE THE DROP</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="miyan-magic">SIGNATURE PACER®</div>
+</section>
+
+<div id="pace-products" class="container py-5">
+    <div class="row g-4">
+        {% for product in products %}
+        <div class="col-md-4">
+            <div class="product-card" style="border:1px solid rgba(0,102,255,0.15);">
+                <a href="{{ url_for('product_bp.product_detail', id=product.id) }}" class="text-decoration-none">
+                    <div class="card-img-container">
+                        <span class="badge-collection" style="background:var(--electric-blue);color:white;">ELITE PERFORMANCE</span>
+                        <img src="{{ url_for('static', filename='images/products/' + product.image) }}" alt="{{ product.name }}">
+                    </div>
+                </a>
+                <div class="px-2 pb-3">
+                    <span class="craft-tag">PACE COLLECTION</span>
+                    <h5 class="product-title">{{ product.name }}</h5>
+                    <div class="product-price">₹{{ "%.2f"|format(product.price) }}</div>
+                    <form action="{{ url_for('customer.add_to_cart', product_id=product.id) }}" method="POST">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn-add-cart mt-2 w-100">Claim Artifact</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

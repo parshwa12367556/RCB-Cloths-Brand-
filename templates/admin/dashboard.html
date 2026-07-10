@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Command Center - RCB Arena Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/arena-dashboard.css') }}">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-shield-alt"></i>
+            <h4>RCB Arena</h4>
+        </div>
+        <div class="sidebar-menu">
+            <a href="{{ url_for('admin.dashboard') }}" class="active">
+                <i class="fas fa-tachometer-alt"></i> Command Center
+            </a>
+            <a href="{{ url_for('admin.manage_products') }}">
+                <i class="fas fa-box"></i> Arena Inventory
+            </a>
+            <a href="{{ url_for('admin.add_product') }}">
+                <i class="fas fa-plus-circle"></i> Add New Drop
+            </a>
+            <a href="{{ url_for('admin.manage_categories') }}">
+                <i class="fas fa-tags"></i> Collections
+            </a>
+            <a href="{{ url_for('admin.orders') }}">
+                <i class="fas fa-shopping-cart"></i> Arena Orders
+            </a>
+            <a href="{{ url_for('admin.users') }}">
+                <i class="fas fa-users"></i> Fan Community
+            </a>
+            <a href="{{ url_for('admin.delivery_persons') }}">
+                <i class="fas fa-truck"></i> Delivery Fleet
+            </a>
+            <a href="{{ url_for('admin.add_delivery_person') }}">
+                <i class="fas fa-user-plus"></i> Add Rider
+            </a>
+            <a href="{{ url_for('admin.manage_returns') }}">
+                <i class="fas fa-undo-alt"></i> Returns <span class="badge">{{ pending_returns }}</span>
+            </a>
+            <a href="{{ url_for('admin.send_notification') }}">
+                <i class="fas fa-bell"></i> Broadcasts
+            </a>
+            <a href="{{ url_for('admin.settings') }}">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+            <hr class="sidebar-divider">
+            <a href="{{ url_for('customer.logout') }}" style="color: var(--victory-red);">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-navbar">
+            <div class="menu-toggle" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="user-info">
+                <div class="notification-icon">
+                    <i class="fas fa-bell fa-lg"></i>
+                    <span class="notification-badge">{{ pending_support }}</span>
+                </div>
+                <div class="dropdown">
+                    <a href="#" class="text-decoration-none" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle fa-2x"></i>
+                        <span>{{ current_user.username }}</span>
+                        <i class="fas fa-chevron-down ms-1" style="font-size: 0.7rem;"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url_for('admin.settings') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('admin.settings') }}"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ url_for('customer.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                <i class="fas fa-check-circle me-2"></i> {{ message }}
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()" style="margin-left: 12px; filter: invert(1); font-size: 0.7rem;"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="alert alert-success alert-dismissible fade show animate-fade-in-up" role="alert">
+            <i class="fas fa-bolt me-2"></i>
+            <strong>Welcome back, Commander!</strong> Your arena is operating at peak performance.
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 col-lg-2">
+                <div class="stat-card gold animate-fade-in-up delay-1">
+                    <div class="row align-items-center">
+                        <div class="col-4"><div class="stat-icon"><i class="fas fa-trophy"></i></div></div>
+                        <div class="col-8"><div class="stat-info"><h3 data-counter="revenue" data-prefix="₹" data-suffix="" data-decimals="2">₹0</h3><p class="label-micro">Championship Revenue</p></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="stat-card blue animate-fade-in-up delay-2">
+                    <div class="row align-items-center">
+                        <div class="col-4"><div class="stat-icon"><i class="fas fa-box"></i></div></div>
+                        <div class="col-8"><div class="stat-info"><h3 data-counter="products" data-prefix="" data-suffix="" data-decimals="0">0</h3><p class="label-micro">Arena Products</p></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="stat-card green animate-fade-in-up delay-3">
+                    <div class="row align-items-center">
+                        <div class="col-4"><div class="stat-icon"><i class="fas fa-shopping-cart"></i></div></div>
+                        <div class="col-8"><div class="stat-info"><h3 data-counter="orders" data-prefix="" data-suffix="" data-decimals="0">0</h3><p class="label-micro">Arena Orders</p></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="stat-card purple animate-fade-in-up delay-4">
+                    <div class="row align-items-center">
+                        <div class="col-4"><div class="stat-icon"><i class="fas fa-users"></i></div></div>
+                        <div class="col-8"><div class="stat-info"><h3 data-counter="users" data-prefix="" data-suffix="" data-decimals="0">0</h3><p class="label-micro">Fan Community</p></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="stat-card red animate-fade-in-up delay-5">
+                    <div class="row align-items-center">
+                        <div class="col-4"><div class="stat-icon"><i class="fas fa-fire"></i></div></div>
+                        <div class="col-8"><div class="stat-info"><h3 data-counter="pending" data-prefix="" data-suffix="" data-decimals="0">0</h3><p class="label-micro">Matchday Pending</p></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="stat-card lime animate-fade-in-up delay-6">
+                    <div class="row align-items-center">
+                        <div class="col-4"><div class="stat-icon"><i class="fas fa-chart-line"></i></div></div>
+                        <div class="col-8"><div class="stat-info"><h3 data-counter="profit" data-prefix="₹" data-suffix="" data-decimals="2">₹0</h3><p class="label-micro">Net Profit</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue & Profit Chart -->
+        <div class="table-card animate-fade-in-up delay-2" style="padding: 24px;">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <h5 style="margin-bottom: 0;"><i class="fas fa-chart-line me-2" style="color: var(--electric-blue);"></i> Matchday Analytics</h5>
+                <div class="d-flex gap-2 align-items-center">
+                    <div class="chart-toggle-group">
+                        <button class="chart-toggle-btn active" data-period="daily" onclick="switchChartPeriod('daily')">Daily</button>
+                        <button class="chart-toggle-btn" data-period="weekly" onclick="switchChartPeriod('weekly')">Weekly</button>
+                        <button class="chart-toggle-btn" data-period="monthly" onclick="switchChartPeriod('monthly')">Monthly</button>
+                    </div>
+                    <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--championship-gold);"></span> Revenue</span>
+                    <span class="chart-legend-item"><span class="chart-legend-dot" style="background: var(--neon-lime);"></span> Profit</span>
+                </div>
+            </div>
+            <div class="chart-container" id="chartWrapper">
+                {% if earning_history %}
+                    <canvas id="revenueChart"></canvas>
+                {% else %}
+                    <div class="chart-empty-state">
+                        <div class="chart-spinner">
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                            <div class="spinner-ring"></div>
+                        </div>
+                        <p class="chart-empty-text">Awaiting matchday data</p>
+                        <p class="chart-empty-sub">Complete your first delivery to unlock analytics</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="table-card animate-fade-in-up delay-2">
+                    <h5><i class="fas fa-history me-2"></i> Arena Orders - Live</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead><tr><th>Order</th><th>Fan</th><th>Amount</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+                            <tbody>
+                                {% for order in recent_orders %}
+                                <tr>
+                                    <td><strong style="color: var(--ice-white);">#{{ order.id }}</strong></td>
+                                    <td>{{ order.user.username }}</td>
+                                    <td>₹{{ '%.2f'|format(order.total_amount) }}</td>
+                                    <td><span class="badge bg-{{ 'success' if order.status == 'delivered' else 'warning' }}">{{ order.status.replace('_', ' ').title() }}</span></td>
+                                    <td>{{ order.created_at.strftime('%b %d') }}</td>
+                                    <td>
+                                        <a href="{{ url_for('admin.orders') }}" class="btn btn-sm btn-outline-light"><i class="fas fa-eye"></i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="table-card animate-fade-in-up delay-3 mt-4">
+                    <h5><i class="fas fa-chart-area me-2"></i> Revenue & Profit Legacy</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead><tr><th>ID</th><th>Date</th><th>Revenue</th><th>Est. Profit</th><th>Rider</th></tr></thead>
+                            <tbody>
+                                {% for entry in earning_history %}
+                                <tr>
+                                    <td>#{{ entry.id }}</td>
+                                    <td>{{ entry.date.strftime('%b %d, %H:%M') }}</td>
+                                    <td class="text-white">₹{{ "%.2f"|format(entry.revenue) }}</td>
+                                    <td class="text-success">₹{{ "%.2f"|format(entry.profit) }}</td>
+                                    <td><span class="badge bg-dark">{{ entry.delivery_person }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="table-card animate-fade-in-up delay-4">
+                    <h5><i class="fas fa-fire me-2"></i> Trending Drops</h5>
+                    <div class="p-3">
+                        {% for product in top_products %}
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="label-micro text-white">{{ product.name }}</span>
+                                <span class="label-micro text-gold">{{ product.sold }} Sold</span>
+                            </div>
+                            <div class="progress" style="height: 6px; background: rgba(255,255,255,0.05);">
+                                <div class="progress-bar bg-gold" role="progressbar" style="width: {{ product.percentage }}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="table-card animate-fade-in-up delay-5 mt-4">
+                    <h5><i class="fas fa-user-plus me-2"></i> New Fan Signings</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tbody>
+                                {% for user in recent_users %}
+                                <tr>
+                                    <td><i class="fas fa-user-circle text-muted"></i></td>
+                                    <td>
+                                        <div class="text-white small">{{ user.username }}</div>
+                                        <div class="text-muted" style="font-size: 0.65rem;">{{ user.created_at.strftime('%b %d') }}</div>
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="badge bg-gold text-dark" style="font-size: 0.6rem;">{{ user.loyalty_points }} pts</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inline chart data from Jinja -->
+    <script>
+        var chartLabels = [];
+        var chartRevenue = [];
+        var chartProfit = [];
+        {% for entry in earning_history %}
+            chartLabels.push('{{ entry.date.strftime("%b %d") }}');
+            chartRevenue.push({{ entry.revenue }});
+            chartProfit.push({{ entry.profit }});
+        {% endfor %}
+
+        var counterTargets = {
+            revenue: {{ total_earnings_raw }},
+            products: {{ total_products }},
+            orders: {{ total_orders }},
+            users: {{ total_users }},
+            pending: {{ pending_orders }},
+            profit: {{ total_profit_raw }}
+        };
+
+        var chartData = {
+            daily: {
+                labels: {{ chart_daily_labels | tojson }},
+                revenue: {{ chart_daily_revenue | tojson }},
+                profit: {{ chart_daily_profit | tojson }},
+                orders: {{ chart_daily_orders | tojson }}
+            },
+            weekly: {
+                labels: {{ chart_weekly_labels | tojson }},
+                revenue: {{ chart_weekly_revenue | tojson }},
+                profit: {{ chart_weekly_profit | tojson }},
+                orders: {{ chart_weekly_orders | tojson }}
+            },
+            monthly: {
+                labels: {{ chart_monthly_labels | tojson }},
+                revenue: {{ chart_monthly_revenue | tojson }},
+                profit: {{ chart_monthly_profit | tojson }},
+                orders: {{ chart_monthly_orders | tojson }}
+            }
+        };
+    </script>
+    <script src="{{ url_for('static', filename='admin/arena-charts.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+     

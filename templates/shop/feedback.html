@@ -1,0 +1,156 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Feedback — ARENA Sports Luxury{% endblock %}
+
+{% block extra_css %}
+<style>
+    .feedback-form-glass {
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 32px;
+        padding: 50px 40px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+    }
+    .rating-stars i {
+        font-size: 2rem;
+        color: rgba(255,255,255,0.2);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin: 0 4px;
+    }
+    .rating-stars i:hover,
+    .rating-stars i.active {
+        color: var(--championship-gold);
+        filter: drop-shadow(0 0 8px rgba(244,180,0,0.4));
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>WE VALUE YOUR <span class="text-gold">FEEDBACK</span></h1>
+        <p>Help us improve the arena experience</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="feedback-form-glass">
+                <h3 class="text-center mb-4" style="font-family:var(--font-display);font-weight:800;letter-spacing:1px;">SHARE YOUR EXPERIENCE</h3>
+                <form action="{{ url_for('customer.feedback') }}" method="POST">
+                    <div class="mb-4 text-center">
+                        <label class="form-label fw-bold text-muted-arena">How would you rate your overall experience?</label>
+                        <div class="rating-stars mt-2">
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                        </div>
+                        <input type="hidden" name="rating" id="rating" value="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;">Order Number (Optional)</label>
+                        <input type="text" name="order_number" class="arena-input" placeholder="e.g. #ORD-12345">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;">What did you like the most?</label>
+                        <select name="liked_most" class="arena-input" style="height:auto;">
+                            <option value="Product Quality">Product Quality</option>
+                            <option value="Delivery Speed">Delivery Speed</option>
+                            <option value="Customer Service">Customer Service</option>
+                            <option value="Pricing">Pricing</option>
+                            <option value="Website Experience">Website Experience</option>
+                            <option value="Packaging">Packaging</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;">Your Feedback</label>
+                        <textarea name="message" class="arena-input" rows="5" placeholder="Tell us about your experience..." required style="resize:vertical;min-height:120px;"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="color:rgba(255,255,255,0.6);font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;">Suggestions for Improvement</label>
+                        <textarea name="suggestions" class="arena-input" rows="3" placeholder="How can we serve you better?" style="resize:vertical;min-height:80px;"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="contact_requested" id="contact" style="background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.2);">
+                            <label class="form-check-label text-muted-arena" for="contact">I would like to be contacted regarding my feedback</label>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn-arena px-5">
+                            Submit Feedback <i class="fas fa-paper-plane ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 mb-5">
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+                <i class="fas fa-star fa-3x text-gold mb-3"></i>
+                <h5 style="font-family:var(--font-display);letter-spacing:1px;">QUALITY GUARANTEED</h5>
+                <p class="text-muted-arena">Premium materials only</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+                <i class="fas fa-truck fa-3x text-gold mb-3"></i>
+                <h5 style="font-family:var(--font-display);letter-spacing:1px;">ARENA DELIVERY</h5>
+                <p class="text-muted-arena">Quick and reliable shipping</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="glass-card p-4 text-center">
+                <i class="fas fa-headset fa-3x text-gold mb-3"></i>
+                <h5 style="font-family:var(--font-display);letter-spacing:1px;">24/7 SUPPORT</h5>
+                <p class="text-muted-arena">Always here to help you</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const stars = document.querySelectorAll('.rating-stars i');
+const ratingInput = document.getElementById('rating');
+stars.forEach(star => {
+    star.addEventListener('click', function () {
+        const rating = parseInt(this.dataset.rating);
+        ratingInput.value = rating;
+        stars.forEach((s, index) => {
+            s.classList.toggle('far', index >= rating);
+            s.classList.toggle('fas', index < rating);
+            s.classList.toggle('active', index < rating);
+        });
+    });
+    star.addEventListener('mouseover', function () {
+        const rating = parseInt(this.dataset.rating);
+        stars.forEach((s, index) => {
+            if (index < rating) { s.classList.remove('far'); s.classList.add('fas', 'active'); }
+        });
+    });
+    star.addEventListener('mouseout', function () {
+        const currentRating = parseInt(ratingInput.value);
+        stars.forEach((s, index) => {
+            s.classList.toggle('far', index >= currentRating);
+            s.classList.toggle('fas', index < currentRating);
+            s.classList.toggle('active', index < currentRating);
+        });
+    });
+});
+</script>
+{% endblock %}

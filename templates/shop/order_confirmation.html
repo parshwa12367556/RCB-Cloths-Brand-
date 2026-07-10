@@ -1,0 +1,62 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Victory Confirmed — ARENA Sports Luxury{% endblock %}
+
+{% block extra_css %}
+<style>
+    .victory-section {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .victory-card {
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 32px;
+        padding: 60px 40px;
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .success-glow {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--gradient-red-gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 2rem;
+        color: white;
+        box-shadow: 0 0 40px rgba(217,4,41,0.4);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="victory-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="victory-card">
+                    <div class="success-glow"><i class="fas fa-check"></i></div>
+                    <p class="text-gold fw-bold mb-2" style="letter-spacing:4px;font-size:0.75rem;">VICTORY CONFIRMED</p>
+                    <h1 class="mb-3" style="font-family:var(--font-sports);font-size:clamp(1.5rem,4vw,2.5rem);letter-spacing:4px;">YOUR MATCHDAY ORDER IS LOCKED IN</h1>
+                    <p class="mb-4" style="color:rgba(255,255,255,0.6);">Your premium jersey drop is being prepared for the arena. Every detail is secured for a flawless championship delivery.</p>
+                    <div class="d-inline-block px-4 py-2 rounded-pill mb-4" style="background:rgba(244,180,0,0.1);border:1px solid rgba(244,180,0,0.2);">
+                        <small class="text-gold fw-bold">Tracking ID: {{ order.tracking_id }}</small>
+                    </div>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{{ url_for('customer.orders') }}" class="btn-outline-arena">Track Arena Delivery</a>
+                        <a href="{{ url_for('index') }}" class="btn-arena">Continue Shopping</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Track Order — ARENA Sports Luxury{% endblock %}
+
+{% block extra_css %}
+<style>
+    .tracking-header {
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px;
+        padding: 40px;
+        margin-bottom: 30px;
+        margin-top: 80px;
+    }
+    .tracking-card {
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px;
+        padding: 40px;
+    }
+    .step-container {
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        padding: 30px 0;
+    }
+    .step-container::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: rgba(255,255,255,0.1);
+        transform: translateY(-50%);
+        z-index: 0;
+    }
+    .progress-bar-custom {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        height: 2px;
+        background: var(--neon-lime);
+        transform: translateY(-50%);
+        z-index: 1;
+        transition: width 1s ease;
+    }
+    .progress-0 { width: 0%; }
+    .progress-1 { width: 33%; }
+    .progress-2 { width: 66%; }
+    .progress-3 { width: 100%; }
+    .step {
+        text-align: center;
+        position: relative;
+        z-index: 2;
+        flex: 1;
+    }
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.06);
+        border: 2px solid rgba(255,255,255,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        color: rgba(255,255,255,0.4);
+        transition: all 0.3s ease;
+    }
+    .step.completed .step-icon {
+        background: var(--neon-lime);
+        border-color: var(--neon-lime);
+        color: var(--arena-black);
+    }
+    .step-label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255,255,255,0.4);
+    }
+    .step.completed .step-label { color: var(--neon-lime); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top:20px;">
+    <div class="tracking-header text-center">
+        <h2 class="mb-2" style="font-family:var(--font-sports);font-size:clamp(2rem,5vw,3rem);letter-spacing:4px;"><i class="fas fa-map-marked-alt me-2 text-gold"></i>TRACK YOUR <span class="text-gold">ARENA</span> DELIVERY</h2>
+        <p class="mb-0 text-muted-arena" style="font-weight:500;">Enter your Tracking ID to see the current status of your delivery</p>
+    </div>
+
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="glass-card p-4">
+                <form action="{{ url_for('customer.track_order') }}" method="GET" class="d-flex gap-2">
+                    <input type="text" name="id" class="arena-input" placeholder="e.g. TRK-12345678" value="{{ search_id or '' }}" required style="flex:1;margin-bottom:0;">
+                    <button type="submit" class="btn-arena" style="white-space:nowrap;"><i class="fas fa-search me-1"></i> Track</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if order %}
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="tracking-card">
+                <div class="d-flex justify-content-between align-items-center mb-4" style="border-bottom:1px solid rgba(255,255,255,0.06);padding-bottom:20px;">
+                    <h4 class="mb-0" style="font-family:var(--font-display);font-weight:800;letter-spacing:1px;">TRACKING: <span class="text-gold">{{ order.tracking_id }}</span></h4>
+                    <span class="order-status status-{{ order.status.lower() }}">{{ order.status.capitalize() }}</span>
+                </div>
+
+                <p class="text-muted-arena fw-bold mb-4"><i class="far fa-clock me-1"></i> Order Placed: {{ order.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+
+                {% if order.status == 'cancelled' %}
+                <div class="text-center p-5 rounded-4" style="background:rgba(217,4,41,0.1);border:1px solid rgba(217,4,41,0.2);">
+                    <i class="fas fa-times-circle fa-3x mb-3" style="color:var(--victory-red);"></i>
+                    <strong class="fs-5">This order has been cancelled.</strong>
+                </div>
+                {% else %}
+                {% set statuses = ['pending', 'processing', 'shipped', 'delivered'] %}
+                {% set current_idx = statuses.index(order.status) if order.status in statuses else 0 %}
+                <div class="step-container">
+                    <div class="progress-bar-custom progress-{{ current_idx }}"></div>
+                    <div class="step {{ 'completed' if current_idx >= 0 else '' }}">
+                        <div class="step-icon"><i class="fas fa-clipboard-list"></i></div>
+                        <div class="step-label">Order Placed</div>
+                    </div>
+                    <div class="step {{ 'completed' if current_idx >= 1 else '' }}">
+                        <div class="step-icon"><i class="fas fa-box-open"></i></div>
+                        <div class="step-label">Processing</div>
+                    </div>
+                    <div class="step {{ 'completed' if current_idx >= 2 else '' }}">
+                        <div class="step-icon"><i class="fas fa-truck"></i></div>
+                        <div class="step-label">Shipped</div>
+                    </div>
+                    <div class="step {{ 'completed' if current_idx == 3 else '' }}">
+                        <div class="step-icon"><i class="fas fa-home"></i></div>
+                        <div class="step-label">Delivered</div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row mt-5 pt-4" style="border-top:1px solid rgba(255,255,255,0.06);">
+                    <div class="col-md-6 mb-3">
+                        <h6 class="fw-bold text-muted-arena mb-3" style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;"><i class="fas fa-map-marker-alt me-2 text-gold"></i>DELIVERY INFORMATION</h6>
+                        {% if current_user.is_authenticated and (current_user.id == order.user_id or current_user.is_admin) %}
+                        <p class="mb-1 fw-bold"><i class="fas fa-user me-2 text-gold"></i> {{ order.user.username }}</p>
+                        <p class="mb-1"><i class="fas fa-home me-2 text-gold"></i> {{ order.shipping_address }}</p>
+                        <p class="mb-1"><i class="fas fa-phone me-2 text-gold"></i> {{ order.phone }}</p>
+                        {% else %}
+                        <p class="mb-1"><i class="fas fa-lock me-2" style="color:var(--championship-gold);"></i> Details hidden for privacy.</p>
+                        <p class="text-muted-arena small">Only the buyer can see full shipping details.</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <h6 class="fw-bold text-muted-arena mb-3" style="font-size:0.75rem;letter-spacing:2px;text-transform:uppercase;"><i class="fas fa-motorcycle me-2 text-gold"></i>DELIVERY PARTNER</h6>
+                        {% if order.delivery_person %}
+                        <p class="mb-1 fw-bold"><i class="fas fa-id-badge me-2 text-blue"></i> {{ order.delivery_person.name }}</p>
+                        {% if order.status in ['shipped', 'processing'] %}
+                        <p class="mb-1"><i class="fas fa-car me-2 text-blue"></i> {{ order.delivery_person.vehicle_number }}</p>
+                        {% endif %}
+                        {% else %}
+                        <p class="text-muted-arena"><i class="fas fa-clock me-2"></i> Assigning a delivery partner soon...</p>
+                        {% endif %}
+                    </div>
+                </div>

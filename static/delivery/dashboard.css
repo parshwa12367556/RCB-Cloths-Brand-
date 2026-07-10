@@ -1,0 +1,197 @@
+/* =============================
+GLOBAL STYLES
+============================= */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f5f6fa;
+    overflow-x: hidden;
+}
+
+/* =============================
+SIDEBAR
+============================= */
+#wrapper {
+    display: flex;
+}
+
+#sidebar-wrapper {
+    min-width: 250px;
+    max-width: 250px;
+    background: #0B0B0C;
+    transition: all 0.3s ease;
+    background: linear-gradient(rgba(11, 11, 12, 0.85), rgba(200, 16, 46, 0.85)), url('https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80') center/cover;
+
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px;
+}
+
+.sidebar-heading {
+    background: #C8102E;
+}
+
+.list-group-item {
+    background: transparent;
+    color: #d2a92c;
+    border: none;
+    padding: 15px 20px;
+    transition: 0.3s;
+}
+
+.list-group-item:hover {
+    background: #1a1a1a;
+    color: #fff;
+    padding-left: 25px;
+}
+
+.list-group-item.active {
+    background: #C8102E;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* =============================
+PAGE CONTENT
+============================= */
+#page-content-wrapper {
+    width: 100%;
+    padding: 20px;
+}
+
+/* =============================
+NAVBAR
+============================= */
+.navbar {
+    background: #ffffff;
+    border-radius: 10px;
+}
+
+/* =============================
+STAT CARDS
+============================= */
+.stat-card-active {
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+}
+
+.stat-card-completed {
+    background: linear-gradient(135deg, #11998e, #38ef7d);
+}
+
+.stat-card-earnings {
+    background: linear-gradient(135deg, #f7971e, #ffd200);
+}
+
+.icon-wrapper {
+    opacity: 0.8;
+}
+
+/* =============================
+ORDER CARD
+============================= */
+.order-card {
+    border: none;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+/* =============================
+STATUS BADGES
+============================= */
+.status-shipped {
+    background-color: #6c757d;
+    color: white;
+}
+
+.status-out_for_delivery {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.status-delivered {
+    background-color: #198754;
+    color: white;
+}
+
+/* =============================
+PAYMENT BADGES
+============================= */
+.payment-cod {
+    background-color: #dc3545;
+    color: white;
+}
+
+.payment-prepaid {
+    background-color: #198754;
+    color: white;
+}
+
+/* =============================
+TABLE
+============================= */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: #0B0B0C;
+    color: #fff;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* =============================
+BUTTONS
+============================= */
+.btn {
+    border-radius: 25px;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background: #0d6efd;
+    border: none;
+}
+
+.btn-success {
+    background: #198754;
+    border: none;
+}
+
+.btn-outline-primary:hover {
+    background: #0d6efd;
+    color: white;
+}
+
+/* =============================
+RESPONSIVE
+============================= */
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+    }
+
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+
+}
+.text-light {
+    --bs-text-opacity: 1;
+    color: #ffc107, var(--bs-text-opacity) !important;
+}

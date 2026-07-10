@@ -1,0 +1,46 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Cart — ARENA Sports Luxury{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <p class="eyebrow text-uppercase mb-2" style="letter-spacing:4px;color:var(--championship-gold);">Arena Cart</p>
+        <h1>YOUR MATCHDAY COLLECTION.</h1>
+        <p>Curated for champions, styled for the stadium.</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row" id="cartContainer"></div>
+</div>
+
+<script id="cart-data" type="application/json">[{% for item in cart_items %}{"cart_id":{{item.id|tojson}},"product_id":{{item.product.id|tojson}},"name":{{item.product.name|tojson}},"price":{{item.product.price|tojson}},"quantity":{{item.quantity|tojson}},"custom_name":{{item.custom_name|tojson}},"custom_number":{{item.custom_number|tojson}},"image":"{% if item.product.image %}{% if item.product.image.startswith('http') %}{{ item.product.image }}{% else %}{{ url_for('static', filename='images/products/' + item.product.image) }}{% endif %}{% else %}https://via.placeholder.com/150x150?text=Product{% endif %}"}{% if not loop.last %},{% endif %}{% endfor %}]</script>
+
+<script>
+const cartItems=JSON.parse(document.getElementById('cart-data').textContent);
+const TAX_RATE=0.10;
+function calcSubtotal(){return cartItems.reduce((s,i)=>s+(i.price*i.quantity),0);}
+function calcTax(s){return s*TAX_RATE;}
+function calcDelivery(s){return s>50?0:5;}
+function calcTotal(){const s=calcSubtotal();return s+calcDelivery(s)+calcTax(s);}
+
+function renderCart(){
+    const c=document.getElementById('cartContainer');
+    if(!c)return;
+    if(!cartItems.length){
+        c.innerHTML=`<div class="col-12"><div class="empty-cart-card"><div class="mb-4"><i class="fas fa-crown fa-4x"></i></div><h3 class="fw-bold mb-3">Your Championship Collection Starts Here</h3><p class="text-muted-arena mb-5">Every legend begins with a single choice.</p><a href="{{ url_for('product_bp.products') }}" class="btn-arena">Secure Your Drop</a></div></div>`;
+        return;
+    }
+    let html=`<div class="col-lg-8">`;
+    cartItems.forEach(item=>{
+        const itemTotal=(item.price*item.quantity).toFixed(2);
+        html+=`<div class="cart-item-glass" data-id="${item.cart_id}"><div class="row align-items-center"><div class="col-md-2 col-12 text-center text-md-start"><img src="${item.image}" class="cart-item-image" alt="${item.name}"></div><div class="col-md-4 col-12"><h5 style="font-family:var(--font-display);font-weight:800;">${item.name}</h5>${item.custom_name ? `<p class="small text-gold mb-0"><i class="fas fa-tag me-1"></i> ${item.custom_name}</p>` : ''}${item.custom_number ? `<p class="small text-gold"><i class="fas fa-hashtag me-1"></i> ${item.custom_number}</p>` : ''}</div><div class="col-md-2 col-12"><div class="product-price">₹${item.price.toFixed(2)}</div></div><div class="col-md-4 col-12 d-flex justify-content-center justify-content-md-end align-items-center flex-wrap gap-2"><form action="/update-cart/${item.cart_id}" method="POST" class="d-flex align-items-center m-0"><input type="number" name="quantity" class="quantity-input" value="${item.quantity}" min="1"><button type="submit" class="btn-arena btn-sm-arena" style="padding:8px 16px;"><i class="fas fa-sync-alt"></i></button></form><a href="/remove-from-cart/${item.cart_id}" class="btn-outline-arena" style="padding:8px 16px;font-size:0.7rem;"><i class="fas fa-trash-alt"></i></a></div></div></div>`;
+    });
+    html+=`</div>`;
+    const subtotal=calcSubtotal(),tax=calcTax(subtotal),delivery=calcDelivery(subtotal),total=calcTotal();
+    html+=`<div class="col-lg-4"><div class="cart-summary-glass"><h4><i class="fas fa-receipt me-2"></i> Summary</h4><div class="summary-row"><span>Subtotal</span><span>₹${subtotal.toFixed(2)}</span></div><div class="summary-row"><span>Delivery</span><span>${delivery===0?'FREE':`₹${delivery.toFixed(2)}`}</span></div><div class="summary-row"><span>Tax</span><span>₹${tax.toFixed(2)}</span></div><div class="summary-total"><span>Total</span><span>₹${total.toFixed(2)}</span></div><a href="{{ url_for('customer.checkout') }}" class="btn-arena w-100 mt-3 text-center justify-content-center">Championship Checkout</a></div></div>`;
+    c.innerHTML=html;
+}
+renderCart();
+</script>
+{% endblock %}

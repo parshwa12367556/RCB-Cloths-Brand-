@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - RCB Arena</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/arena-dashboard.css') }}">
+</head>
+<body>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header"><i class="fas fa-shield-alt"></i><h4>RCB Arena</h4></div>
+        <div class="sidebar-menu">
+            <a href="{{ url_for('admin.dashboard') }}"><i class="fas fa-tachometer-alt"></i> Command Center</a>
+            <a href="{{ url_for('admin.manage_products') }}"><i class="fas fa-box"></i> Arena Inventory</a>
+            <a href="{{ url_for('admin.add_product') }}"><i class="fas fa-plus-circle"></i> Add New Drop</a>
+            <a href="{{ url_for('admin.manage_categories') }}"><i class="fas fa-tags"></i> Collections</a>
+            <a href="{{ url_for('admin.orders') }}"><i class="fas fa-shopping-cart"></i> Arena Orders</a>
+            <a href="{{ url_for('admin.users') }}"><i class="fas fa-users"></i> Fan Community</a>
+            <a href="{{ url_for('admin.delivery_persons') }}"><i class="fas fa-truck"></i> Delivery Fleet</a>
+            <a href="{{ url_for('admin.manage_returns') }}"><i class="fas fa-undo-alt"></i> Returns</a>
+            <a href="{{ url_for('admin.send_notification') }}"><i class="fas fa-bell"></i> Broadcasts</a>
+            <a href="{{ url_for('admin.feedback') }}"><i class="fas fa-comments"></i> Feedback</a>
+            <a href="{{ url_for('admin.settings') }}" class="active"><i class="fas fa-cog"></i> Settings</a>
+            <hr class="sidebar-divider">
+            <a href="{{ url_for('customer.logout') }}" style="color: var(--victory-red);"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-navbar">
+            <div class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars fa-lg"></i></div>
+            <div class="user-info">
+                <a href="{{ url_for('admin.send_notification') }}" style="color: inherit;"><i class="fas fa-bell fa-lg"></i></a>
+                <a href="{{ url_for('admin.settings') }}" style="color: inherit;"><i class="fas fa-user-circle fa-2x"></i></a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+                <i class="fas fa-check-circle me-2"></i> {{ message }}
+                <button type="button" class="btn-close" onclick="this.parentElement.remove()" style="margin-left: 12px; filter: invert(1); font-size: 0.7rem;"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="section-header">
+            <h3><i class="fas fa-cog me-2"></i> Arena Settings</h3>
+            <span class="badge bg-success" style="font-size: 0.75rem;">Secured for the Command Center</span>
+        </div>
+
+        <div class="settings-card animate-fade-in-up">
+            <ul class="nav settings-nav" id="settingsTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab">
+                        <i class="fas fa-user me-2"></i> Profile
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab">
+                        <i class="fas fa-lock me-2"></i> Security
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="store-tab" data-bs-toggle="tab" data-bs-target="#store" type="button" role="tab">
+                        <i class="fas fa-store me-2"></i> Store
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="notifications-tab" data-bs-toggle="tab" data-bs-target="#notifications" type="button" role="tab">
+                        <i class="fas fa-bell me-2"></i> Alerts
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="profile" role="tabpanel">
+                    <form action="{{ url_for('admin.settings') }}" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" name="username" class="form-control" value="{{ current_user.username }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" name="email" class="form-control" value="{{ current_user.email }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" name="name" class="form-control" value="Admin User">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="tel" name="phone" class="form-control" value="{{ current_user.phone or '' }}">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Profile Image</label>
+                                <input type="file" class="form-control">
+                                <small style="color: var(--metallic-silver-dark);">Recommended: 200x200px</small>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn-arena-primary"><i class="fas fa-save me-2"></i> SAVE PROFILE</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="tab-pane fade" id="security" role="tabpanel">
+                    <form action="#" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Current Password</label>
+                            <input type="password" name="current_password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">New Password</label>
+                            <input type="password" name="new_password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirm New Password</label>
+                            <input type="password" name="confirm_password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn-arena-primary"><i class="fas fa-shield-alt me-2"></i> UPDATE PASSWORD</button>
+                    </form>
+                    <hr style="border-color: var(--glass-border);">
+                    <h5 style="font-family: 'Montserrat', sans-serif; color: var(--ice-white);">Two-Factor Authentication</h5>
+                    <p style="color: var(--metallic-silver-dark);">Add an extra layer of arena security</p>
+                    <button class="btn-arena-secondary"><i class="fas fa-lock me-2"></i> Enable 2FA</button>
+                </div>
+
+                <div class="tab-pane fade" id="store" role="tabpanel">
+                    <form action="#" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Store Name</label>
+                            <input type="text" class="form-control" value="RCB Store">
+                        </div>
+                        <div class="mb-3">
+      

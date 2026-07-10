@@ -1,0 +1,40 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Register — ARENA Sports Luxury{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-banner">
+        <div class="banner-content text-center px-4">
+            <p class="text-uppercase fw-bold mb-0" style="color:#F4B400;letter-spacing:3px;">The 12th Man Army</p>
+            <h1>JOIN THE<br><span style="color:var(--championship-gold);">LEGACY.</span></h1>
+            <p class="lead opacity-75">Unlock exclusive drops and match day perks.</p>
+        </div>
+    </div>
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Create <span>Account</span></h2>
+                <p class="text-muted-arena small">Experience the bold side of fashion.</p>
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in messages %}<div class="alert alert-{{ 'success' if category=='success' else 'danger' }} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}{% endwith %}
+            <form action="{{ url_for('customer.register') }}" method="POST">
+                <div class="row">
+                    <div class="col-md-6 mb-3"><label class="form-label">Username</label><input type="text" name="username" class="form-control" required></div>
+                    <div class="col-md-6 mb-3"><label class="form-label">Phone</label><input type="tel" name="phone" class="form-control" required></div>
+                </div>
+                <div class="mb-3"><label class="form-label">Email Address</label><input type="email" name="email" class="form-control" required></div>
+                <div class="row">
+                    <div class="col-md-6 mb-3"><label class="form-label">Password</label><input type="password" name="password" class="form-control" required></div>
+                    <div class="col-md-6 mb-3"><label class="form-label">Confirm</label><input type="password" name="confirm_password" class="form-control" required></div>
+                </div>
+                <button type="submit" class="btn-auth">Join Now</button>
+            </form>
+            <div class="social-auth">
+                <a href="#" class="btn-social"><i class="fab fa-google text-danger"></i></a>
+                <a href="#" class="btn-social"><i class="fab fa-apple"></i></a>
+            </div>
+            <div class="auth-link"><p>Part of the team? <a href="{{ url_for('customer.login') }}">Sign In</a></p></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

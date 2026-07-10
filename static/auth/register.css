@@ -1,0 +1,98 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(rgba(11, 11, 12, 0.85), rgba(200, 16, 46, 0.85)), url('https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&q=80') center/cover fixed;
+    color: #fff;
+}
+
+.navbar {
+    background-color: #0B0B0C !important;
+    border-bottom: 3px solid #C8102E;
+}
+
+.register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 80px);
+    padding: 40px 20px;
+}
+
+.register-card {
+    background: #0B0B0C;
+    border: 1px solid #333;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 500px;
+    color: white;
+}
+
+.register-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.register-header i {
+    font-size: 3rem;
+    color: #C8102E;
+    margin-bottom: 15px;
+}
+
+.register-header h2 {
+    font-weight: 700;
+    color: #D4A017;
+}
+
+.form-label {
+    color: #e0e0e0;
+}
+
+.form-control {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    color: white;
+}
+
+.form-control:focus {
+    background-color: #1a1a1a;
+    border-color: #C8102E;
+    box-shadow: 0 0 0 0.25rem rgba(200, 16, 46, 0.25);
+    color: white;
+}
+
+.btn-register {
+    width: 100%;
+    background-color: #C8102E;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.btn-register:hover {
+    background-color: #a00d25;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.login-link a {
+    color: #C8102E;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    color: #ff3333;
+}
+
+.text-muted {
+    color: #a0a0a0 !important;
+}

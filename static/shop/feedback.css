@@ -1,0 +1,126 @@
+ * {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+ }
+
+ body {
+     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+     background-color: #f5f5f5;
+ }
+
+ .navbar {
+     background: rgba(255, 255, 255, 0.85) !important;
+     backdrop-filter: blur(16px);
+     border-bottom: 1px solid rgba(0,0,0,0.05);
+ }
+
+ .navbar-brand,
+ .nav-link {
+     color: #222222 !important;
+ }
+
+ .btn-rcb-red {
+     background-color: #F4B400 !important;
+     color: #222222 !important;
+     border: none !important;
+     font-weight: 700 !important;
+     transition: all 0.3s ease !important;
+ }
+
+ .btn-rcb-red:hover {
+     background-color: #d99f00 !important;
+ }
+
+ .page-header {
+     background: linear-gradient(rgba(209, 18, 27, 0.8), rgba(244, 180, 0, 0.8)), url('../images/ChatGPT Image Jun 1, 2026, 11_15_58 AM.png') center/cover;
+     color: white;
+     padding: 60px 0;
+     text-align: center;
+     margin-bottom: 40px;
+ }
+
+ .feedback-form {
+     background: white;
+     border-radius: 15px;
+     padding: 40px;
+     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+ }
+
+ .rating-stars {
+     font-size: 2rem;
+     color: #ffc107;
+     cursor: pointer;
+ }
+
+ .rating-stars i {
+     margin-right: 5px;
+     transition: all 0.3s;
+ }
+
+ .rating-stars i:hover {
+     transform: scale(1.1);
+ }
+
+ .form-control,
+ .form-select {
+     border-radius: 8px;
+     padding: 12px;
+     border: 1px solid #ddd;
+ }
+
+ .form-control:focus {
+     border-color: #D1121B;
+     box-shadow: 0 0 0 0.2rem rgba(209, 18, 27, 0.25);
+ }
+
+ .btn-submit {
+     background-color: #D1121B;
+     color: white;
+     padding: 12px 40px;
+     font-size: 1.1rem;
+     border: none;
+     border-radius: 8px;
+     transition: all 0.3s;
+ }
+
+ .btn-submit:hover {
+     background-color: #b50f16;
+     transform: translateY(-2px);
+ }
+
+ footer {
+     background: #FFF7ED;
+     color: #666666;
+     padding: 80px 0 40px;
+     border-top: 3px solid #D1121B;
+     margin-top: 70px;
+ }
+
+ footer a {
+     color: #666666;
+     text-decoration: none;
+ }
+
+ .nav-link {
+     transition: all 0.3s ease;
+ }
+
+ .nav-link:hover {
+     color: #F4B400 !important;
+     transform: scale(1.05);
+ }
+
+ .navbar-brand {
+     font-size: 1.5rem;
+     letter-spacing: 1px;
+ }
+
+ .btn-success {
+     background: linear-gradient(45deg, #D1121B, #F4B400);
+     border: none;
+ }
+
+ .btn-success:hover {
+     background: linear-gradient(45deg, #F4B400, #D1121B);
+ }

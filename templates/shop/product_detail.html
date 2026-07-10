@@ -1,0 +1,49 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}{{ product.name }} — ARENA Sports Luxury{% endblock %}
+
+{% block content %}
+<section class="hero-section" style="min-height:80vh;">
+    <div class="container position-relative" style="z-index:2;">
+        <div class="row align-items-center min-vh-75" style="padding-top:80px;">
+            <div class="col-lg-6">
+                <span class="text-gold fw-bold mb-3 d-block" style="letter-spacing:4px;font-size:0.75rem;">CHAMPIONSHIP SERIES // 2026</span>
+                <h1 class="giant-title">{{ product.name.split(' ')[0] }}<br><span style="color:var(--victory-red);">{{ ' '.join(product.name.split(' ')[1:]) }}</span></h1>
+                <p class="lead opacity-75 mb-4" style="max-width:500px;">Built for matchday glory. Engineered with elite performance fabric.</p>
+                <div class="product-price mb-4" style="font-size:3rem;">₹{{ "%.0f"|format(product.price) }}</div>
+
+                <div class="mb-4">
+                    <h6 class="text-uppercase fw-bold small opacity-50 mb-3">Select Size</h6>
+                    <div class="d-flex gap-2 flex-wrap">
+                        {% for size in ['XS','S','M','L','XL','XXL'] %}
+                        <div class="size-btn" style="width:50px;height:50px;border-radius:12px;border:1px solid var(--glass-border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;transition:all 0.3s ease;{% if size=='M' %}background:var(--gradient-red-gold);border-color:transparent;{% endif %}" onmouseover="this.style.borderColor='var(--championship-gold)'" onmouseout="this.style.borderColor='var(--glass-border)'" onclick="document.querySelectorAll('.size-btn').forEach(s=>{s.style.background='none';s.style.borderColor='var(--glass-border)'});this.style.background='var(--gradient-red-gold)';this.style.borderColor='transparent'">{{ size }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <form action="{{ url_for('customer.add_to_cart', product_id=product.id) }}" method="POST">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn-arena px-5 py-3">SECURE YOUR JERSEY</button>
+                </form>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="position-relative d-inline-block">
+                    <div class="ambient-glow" style="position:absolute;inset:0;background:radial-gradient(circle,var(--victory-red),transparent 70%);filter:blur(60px);opacity:0.3;"></div>
+                    <img src="{% if product.image %}{% if product.image.startswith('http') %}{{ product.image }}{% else %}{{ url_for('static', filename='images/products/' + product.image) }}{% endif %}{% else %}https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600{% endif %}" class="img-fluid float-anim" style="max-height:500px;object-fit:contain;filter:drop-shadow(0 0 50px rgba(217,4,41,0.3));" alt="{{ product.name }}">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ATHLETE SHOWCASE -->
+<section class="py-5" style="background:rgba(0,0,0,0.3);">
+    <div class="container py-5">
+        <h2 class="giant-title text-center mb-5" style="font-size:clamp(2rem,4vw,3rem);">THE <span class="text-gold">ELITE</span> ROSTER</h2>
+        <div class="row g-4 stagger-children">
+            <div class="col-md-4"><div class="athlete-card"><img src="https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=800&q=80" alt="Athlete"><div class="athlete-overlay"><h3 class="athlete-name">VIRAT KOHLI</h3><p class="athlete-quote">"Loyalty is victory."</p></div></div></div>
+            <div class="col-md-4"><div class="athlete-card"><img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80" alt="Athlete"><div class="athlete-overlay"><h3 class="athlete-name">C. RONALDO</h3><p class="athlete-quote">"Excellence is a habit."</p></div></div></div>
+            <div class="col-md-4"><div class="athlete-card"><img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=800&q=80" alt="Athlete"><div class="athlete-overlay"><h3 class="athlete-name">LEBRON JAMES</h3><p class="athlete-quote">"Strive for greatness."</p></div></div></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

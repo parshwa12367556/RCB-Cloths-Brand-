@@ -1,0 +1,51 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Login — ARENA Sports Luxury{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-banner">
+        <div class="banner-content text-center px-4">
+            <p class="text-uppercase fw-bold mb-0" style="color:#F4B400;letter-spacing:3px;">Official 2026 Collection</p>
+            <h1>ENTER THE<br><span style="color:var(--championship-gold);">ARENA.</span></h1>
+            <p class="lead opacity-75">Join the inner circle of champions.</p>
+        </div>
+    </div>
+    <div class="auth-form-side">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Welcome <span>Back</span></h2>
+                <p>Enter your credentials to access your luxury locker.</p>
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in messages %}<div class="alert alert-{{ 'success' if category=='success' else 'danger' }} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>{% endfor %}{% endif %}{% endwith %}
+            <form action="{{ url_for('customer.login') }}" method="POST">
+                <div class="mb-4">
+                    <label class="form-label">Login As</label>
+                    <select name="role" class="form-control" required>
+                        <option value="customer" selected>Customer</option>
+                        <option value="delivery">Delivery Person</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Username / Email</label>
+                    <input type="text" name="username" class="form-control" placeholder="champion@arena.com" required>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+                </div>
+                <div class="mb-4 d-flex justify-content-between align-items-center">
+                    <div><input type="checkbox" class="form-check-input" id="remember"><label class="form-check-label small ms-1" for="remember">Keep me signed in</label></div>
+                    <a href="{{ url_for('customer.forgot_password') }}" class="small fw-bold text-decoration-none" style="color:var(--championship-gold);">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn-auth">Sign In</button>
+            </form>
+            <div class="social-auth">
+                <a href="#" class="btn-social"><i class="fab fa-google text-danger me-2"></i> Google</a>
+                <a href="#" class="btn-social"><i class="fab fa-apple me-2"></i> Apple</a>
+            </div>
+            <div class="register-link"><p>Don't have an account? <a href="{{ url_for('customer.register') }}">Register here</a></p></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ order.tracking_id }} | ARENA Sports Luxury</title>
+    <!-- Web Fonts for Browser -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PDF Generation Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        /* PDF COMPATIBLE STYLES (xhtml2pdf / CSS 2.1) */
+        @page { size: a4 portrait; margin: 0; }
+        
+        body {
+            font-family: 'Helvetica', 'Inter', sans-serif;
+            background-color: #f8f8f8;
+            color: #222222;
+            margin: 0;
+            padding: 0;
+        }
+
+        .invoice-container {
+            width: 700px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border: 1px solid #e9ecef;
+            padding: 50px;
+            border-radius: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .invoice-container::before {
+            content: '';
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(217,4,41,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .invoice-container::after {
+            content: '';
+            position: absolute;
+            bottom: -80px; left: -80px;
+            width: 250px; height: 250px;
+            background: radial-gradient(circle, rgba(244,180,0,0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* Header Branding */
+        .header-table { width: 100%; border-bottom: 3px solid #D90429; border-image: linear-gradient(90deg, #D90429, #F4B400) 1; margin-bottom: 30px; padding-bottom: 20px; }
+        .brand-name { font-size: 32px; font-weight: bold; color: #222222; text-transform: uppercase; }
+        .brand-name span { color: #D90429; }
+        .tax-label { text-align: right; font-size: 24px; color: #F4B400; font-weight: bold; }
+
+        /* Info Grid */
+        .info-table { width: 100%; margin-bottom: 40px; }
+        .info-col { width: 50%; vertical-align: top; font-size: 13px; line-height: 1.6; }
+        .section-title { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+
+        /* Items Table */
+        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        .items-table th { border-bottom: 1px solid #222; padding: 12px; text-align: left; font-size: 11px; color: #888; text-transform: uppercase; }
+        .items-table td { padding: 15px 12px; border-bottom: 1px solid #111; font-size: 14px; }
+
+        /* Summary */
+        .summary-table { width: 100%; margin-top: 20px; }
+        .summary-label { text-align: right; padding: 8px; color: #888; font-size: 13px; }
+        .summary-value { text-align: right; padding: 8px; width: 120px; font-weight: bold; font-size: 13px; }
+        .grand-total { border-top: 1px solid #D90429; font-size: 20px; color: #F4B400; }
+
+        /* Progress Bar for PDF */
+        .progress-box { background-color: #08090B; padding: 15px; border-radius: 12px; margin-top: 30px; font-size: 10px; text-align: center; color: #B7FF00; letter-spacing: 1px; }
+
+        /* Browser Action Buttons */
+        @media print {
+            .no-print { display: none !important; }
+        }
+        .action-btns { text-align: center; margin-bottom: 40px; }
+        .btn-invoice { 
+            display: inline-block; padding: 12px 24px; border-radius: 30px; background: linear-gradient(135deg, #D90429, #F4B400); color: white; 
+            text-decoration: none; font-weight: bold; margin: 0 10px; cursor: pointer; border: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-invoice:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(217,4,41,0.3); }
+    </style>
+</head>
+<body>
+    <div class="no-print action-btns" style="padding-top: 50px;">
+        <button onclick="generatePDF()" class="btn-invoice"><i class="fas fa-download"></i> Save as PDF</button>
+        <a href="{{ url_for('customer.orders') }}" class="btn-invoice" style="background: #08090B;">Return to Orders</a>
+    </div>
+
+    <div id="invoiceContainer" class="invoice-container">
+        <table class="header-table">
+            <tr>
+                <td>
+                    <div class="brand-name">ARENA <span>SPORTS</span></div>
+                    <div style="font-size: 10px; opacity: 0.5;">Global Multi-Sports Luxury Platform</div>
+                </td>
+                <td class="tax-label">TAX INVOICE</td>
+            </tr>
+        </table>
+
+        <table class="info-table">
+            <tr>
+                <td class="info-col">
+                    <div class="section-title">Billing Details</div>
+                    <strong>{{ order.user.username }}</strong><br>
+                    {{ order.shipping_address|safe }}<br>
+                    Ph: {{ order.phone }}
+                </td>
+                <td class="info-col" style="text-align: right;">
+                    <div class="section-title">Order Information</div>
+                    Order ID: #{{ order.id }}<br>
+                    Ref: {{ order.tracking_id }}<br>
+                    Date: {{ order.created_at.strftime('%d %B, %Y') }}<br>
+                    Payment: {{ order.payment_method|upper }}
+                </td>
+            </tr>
+        </table>
+
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th style="text-align: center;">Qty</th>
+                    <th style="text-align: right;">Price</th>
+                    <th style="text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set ns = namespace(subtotal=0) %}
+                {% for item in order.items %}
+                {% set line_total = item.price * item.quantity %}
+                {% set ns.subtotal = ns.subtotal + line_total %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td style="text-align: center;">{{ item.quantity }}</td>
+                    <td style="text-align: right;">₹{{ "%.2f"|format(item.price) }}</td>
+                    <td style="text-align: right;">₹{{ "%.2f"|format(line_total) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <table class="summary-table">
+            <tr>
+                <td class="summary-label">Subtotal</td>
+                <td class="summary-value">₹{{ "%.2f"|format(ns.subtotal) }}</td>
+            </tr>
+            <tr>
+                <td class="summary-label">Estimated GST (10%)</td>
+                <td class="summary-value">₹{{ "%.2f"|format(ns.subtotal * 0.10) }}</td>
+            </tr>
+            <tr>
+                <td class="summary-label">Processing & Delivery</td>
+                <td class="summary-value">₹{{ "%.2f"|format(0 if ns.subtotal > 50 else 5) }}</td>
+            </tr>
+            {% if (ns.subtotal * 1.1) + (0 if ns.subtotal > 50 else 5) > order.total_amount %}
+            <tr>
+                <td class="summary-label" style="color: #00ff99;">Wallet Credit Applied</td>
+                <td class="summary-value" style="color: #00ff99;">-₹{{ "%.2f"|format((ns.subtotal * 1.1) + (0 if ns.subtotal > 50 else 5) - order.total_amount) }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td class="summary-label grand-total" style="padding: 15px;">TOTAL PAID</td>
+                <td class="summary-value grand-total" style="padding: 15px;">₹{{ "%.2f"|format(order.total_amount) }}</td>
+            </tr>
+        </table>
+
+        <div class="progress-box">
+            <i class="fas fa-shield-check"></i> ORDER STATUS: {{ order.status|replace('_', ' ')|upper }} | AUTHENTICATED ELECTRONIC INVOICE
+        </div>
+
+        <div style="margin-top: 50px; text-align: center; font-size: 10px; color: #444; border-top: 1px solid #111; padding-top: 20px;">
+            This is an electronically generated invoice from <strong style="color:#D90429;">ARENA</strong> Sports Luxury. For support, contact <strong>support@arena.com</strong>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#D90429', '#F4B400', '#ffffff']
+            });
+        });
+
+        function generatePDF() {
+            const element = document.getElementById('invoiceContainer');
+            const opt = {
+                margin: 0.5,
+                filename: 'ARENA_Invoice_{{ order.tracking_id }}.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+</html>

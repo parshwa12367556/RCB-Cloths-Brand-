@@ -1,0 +1,306 @@
+#!/usr/bin/env python3
+"""Write the new profile.html template extending arena_base.html."""
+import os
+
+content = """{% extends "layout/arena_base.html" %}
+{% block title %}My Profile — ARENA Sports Luxury{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-page { padding-top: 20px; padding-bottom: 80px; }
+    .profile-layout { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+
+    .profile-sidebar-glass {
+        background: rgba(255,255,255,0.04); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.08); border-radius: 24px;
+        padding: 32px 24px; text-align: center; position: sticky; top: 90px;
+    }
+    .profile-avatar {
+        width: 90px; height: 90px; margin: 0 auto 16px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--victory-red), var(--championship-gold));
+        display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .profile-avatar::after {
+        content: ''; position: absolute; inset: -4px; border-radius: 50%;
+        border: 2px solid var(--championship-gold); opacity: 0.4;
+        animation: avatarGlow 3s infinite alternate;
+    }
+    @keyframes avatarGlow { to { opacity: 0.8; filter: drop-shadow(0 0 12px rgba(244,180,0,0.4)); } }
+    .profile-avatar i { font-size: 2.2rem; color: #fff; }
+    .profile-sidebar-glass h5 {
+        color: var(--ice-white); font-family: var(--font-display); font-size: 1.1rem;
+        font-weight: 700; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase;
+    }
+    .profile-sidebar-glass .member-since { color: rgba(255,255,255,0.35); font-size: 0.75rem; margin-bottom: 20px; }
+    .profile-sidebar-glass .sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 0 -24px 16px; }
+    .profile-menu { list-style: none; padding: 0; margin: 0; text-align: left; }
+    .profile-menu li { margin-bottom: 2px; }
+    .profile-menu a {
+        display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 12px;
+        color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.85rem; font-weight: 500;
+        transition: all 0.3s ease; cursor: pointer;
+    }
+    .profile-menu a:hover { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.9); }
+    .profile-menu a.active {
+        background: linear-gradient(135deg, rgba(217,4,41,0.15), rgba(244,180,0,0.1));
+        color: var(--championship-gold); border: 1px solid rgba(244,180,0,0.2);
+    }
+    .profile-menu a i { width: 18px; text-align: center; font-size: 0.9rem; }
+
+    .membership-card-profile {
+        background: linear-gradient(135deg, rgba(8,9,11,0.95), rgba(21,23,28,0.95));
+        border: 1px solid rgba(244,180,0,0.2); border-radius: 20px; padding: 28px;
+        margin-bottom: 28px; position: relative; overflow: hidden;
+    }
+    .membership-card-profile::before {
+        content: ''; position: absolute; top: -50%; right: -50%; width: 100%; height: 100%;
+        background: radial-gradient(circle, rgba(244,180,0,0.08), transparent 70%); pointer-events: none;
+    }
+    .membership-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; position: relative; z-index: 1; }
+    .membership-badge-tier {
+        display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px;
+        font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+        background: linear-gradient(135deg, rgba(244,180,0,0.2), rgba(244,180,0,0.05));
+        color: var(--championship-gold); border: 1px solid rgba(244,180,0,0.3);
+    }
+    .membership-title { font-family: var(--font-display); font-size: 1.3rem; color: var(--ice-white); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-top: 8px; }
+    .membership-subtitle { color: rgba(255,255,255,0.4); font-size: 0.8rem; }
+    .points-display { font-family: var(--font-display); font-size: 2rem; color: var(--championship-gold); font-weight: 800; text-align: right; line-height: 1; }
+    .points-label { color: rgba(255,255,255,0.3); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; text-align: right; }
+    .membership-progress-track { height: 4px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+    .membership-progress-fill { height: 100%; background: linear-gradient(90deg, var(--victory-red), var(--championship-gold)); border-radius: 4px; transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 0 12px rgba(244,180,0,0.3); }
+
+    .profile-content-panel { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.06); border-radius: 24px; padding: 36px; }
+    .profile-content-panel h4 { font-family: var(--font-display); font-size: 1.4rem; color: var(--ice-white); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .profile-content-panel h4 .accent { color: var(--championship-gold); }
+
+    .arena-form-group { margin-bottom: 20px; }
+    .arena-form-group label { display: block; color: rgba(255,255,255,0.5); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+    .arena-form-control { width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; color: var(--ice-white); font-size: 0.9rem; font-family: var(--font-body); transition: all 0.3s ease; outline: none; }
+    .arena-form-control:focus { border-color: var(--championship-gold); box-shadow: 0 0 0 3px rgba(244,180,0,0.1); background: rgba(255,255,255,0.06); }
+    .arena-form-control::placeholder { color: rgba(255,255,255,0.2); }
+    textarea.arena-form-control { min-height: 100px; resize: vertical; }
+
+    .order-card-glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 20px 24px; margin-bottom: 12px; transition: all 0.3s ease; }
+    .order-card-glass:hover { border-color: rgba(244,180,0,0.2); background: rgba(255,255,255,0.05); transform: translateY(-2px); }
+    .order-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .order-meta { display: flex; flex-direction: column; gap: 4px; }
+    .order-id { color: rgba(255,255,255,0.4); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .order-date { color: rgba(255,255,255,0.25); font-size: 0.8rem; }
+    .order-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+    .order-status.delivered, .status-delivered { background: rgba(34,197,94,0.12); color: #22c55e; border: 1px solid rgba(34,197,94,0.2); }
+    .order-status.pending, .status-pending { background: rgba(244,180,0,0.12); color: var(--championship-gold); border: 1px solid rgba(244,180,0,0.2); }
+    .order-status.processing, .status-processing { background: rgba(0,102,255,0.12); color: var(--electric-blue); border: 1px solid rgba(0,102,255,0.2); }
+    .order-status.cancelled, .status-cancelled { background: rgba(217,4,41,0.12); color: var(--victory-red); border: 1px solid rgba(217,4,41,0.2); }
+    .order-status.shipped, .status-shipped { background: rgba(183,255,0,0.1); color: var(--neon-lime); border: 1px solid rgba(183,255,0,0.2); }
+    .order-status.return_requested, .status-return_requested { background: rgba(191,199,213,0.12); color: var(--metallic-silver); border: 1px solid rgba(191,199,213,0.2); }
+    .order-status.payment_pending, .status-payment_pending { background: rgba(217,4,41,0.12); color: var(--victory-red); border: 1px solid rgba(217,4,41,0.2); }
+    .order-amount { font-family: var(--font-display); font-size: 1.1rem; color: var(--ice-white); font-weight: 700; }
+    .order-actions { display: flex; gap: 8px; }
+
+    .wallet-table { width: 100%; border-collapse: separate; border-spacing: 0 4px; }
+    .wallet-table thead th { color: rgba(255,255,255,0.3); font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .wallet-table tbody tr { background: rgba(255,255,255,0.02); border-radius: 12px; transition: background 0.3s ease; }
+    .wallet-table tbody tr:hover { background: rgba(255,255,255,0.05); }
+    .wallet-table tbody td { padding: 14px 16px; color: rgba(255,255,255,0.7); font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .wallet-table tbody td:first-child { border-radius: 12px 0 0 12px; }
+    .wallet-table tbody td:last-child { border-radius: 0 12px 12px 0; }
+    .wallet-badge { display: inline-flex; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .wallet-badge.credit { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .wallet-badge.debit { background: rgba(217,4,41,0.12); color: var(--victory-red); }
+
+    .address-card-glass { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 24px; }
+    .address-card-glass h5 { color: var(--ice-white); font-family: var(--font-display); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    .address-card-glass p { color: rgba(255,255,255,0.5); font-size: 0.9rem; line-height: 1.6; }
+    .settings-section { margin-bottom: 32px; }
+    .settings-section h5 { font-family: var(--font-display); font-size: 1rem; color: var(--ice-white); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; }
+    .arena-checkbox { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .arena-checkbox input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--championship-gold); cursor: pointer; }
+    .arena-checkbox label { color: rgba(255,255,255,0.6); font-size: 0.85rem; cursor: pointer; }
+
+    .empty-state { text-align: center; padding: 60px 20px; }
+    .empty-state-icon { font-size: 4rem; margin-bottom: 20px; opacity: 0.15; }
+    .empty-state h5 { font-family: var(--font-display); font-size: 1.2rem; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+    .empty-state p { color: rgba(255,255,255,0.3); font-size: 0.85rem; margin-bottom: 24px; }
+
+    @media (max-width: 992px) {
+        .profile-layout { grid-template-columns: 1fr; }
+        .profile-sidebar-glass { position: static; }
+        .profile-menu { display: flex; gap: 4px; overflow-x: auto; padding-bottom: 8px; }
+        .profile-menu li { flex-shrink: 0; }
+    }
+    @media (max-width: 576px) {
+        .profile-content-panel { padding: 20px; }
+        .order-row { flex-direction: column; align-items: flex-start; }
+        .order-actions { width: 100%; }
+        .order-actions .btn-arena-sm { flex: 1; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container profile-page">
+    <div class="page-header">
+        <div class="container">
+            <h1><i class="fas fa-user-circle me-3 text-gold"></i>MATCHDAY <span class="text-gold">PROFILE</span></h1>
+            <p>Manage your account, orders, and legacy</p>
+        </div>
+    </div>
+
+    <div class="profile-layout">
+        <div class="profile-sidebar-glass">
+            <div class="profile-avatar"><i class="fas fa-user"></i></div>
+            <h5>{{ current_user.username }}</h5>
+            <div class="member-since">Member since {{ current_user.created_at.strftime('%b %Y') }}</div>
+            <div class="sidebar-divider"></div>
+            <ul class="profile-menu">
+                <li><a href="#" class="active" onclick="showTab('profile', this)"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="#" onclick="showTab('orders', this)"><i class="fas fa-shopping-bag"></i> My Orders</a></li>
+                <li><a href="#" onclick="showTab('wallet', this)"><i class="fas fa-wallet"></i> Wallet</a></li>
+                <li><a href="#" onclick="showTab('address', this)"><i class="fas fa-map-marker-alt"></i> Address</a></li>
+                <li><a href="#" onclick="showTab('settings', this)"><i class="fas fa-cog"></i> Settings</a></li>
+            </ul>
+        </div>
+
+        <div>
+            <div id="profile-tab" class="profile-content">
+                <div class="membership-card-profile">
+                    <div class="membership-top">
+                        <div>
+                            <div class="membership-badge-tier"><i class="fas fa-crown"></i> Gold Tier</div>
+                            <div class="membership-title">The Arena Club</div>
+                            <div class="membership-subtitle">You are 450 points away from Platinum</div>
+                        </div>
+                        <div>
+                            <div class="points-display">1,550</div>
+                            <div class="points-label">Arena Points</div>
+                        </div>
+                    </div>
+                    <div class="membership-progress-track"><div class="membership-progress-fill" style="width: 65%;"></div></div>
+                </div>
+                <div class="profile-content-panel">
+                    <h4><span class="accent">///</span> Edit Profile</h4>
+                    <form action="{{ url_for('customer.update_profile') }}" method="POST">
+                        <div class="arena-form-group"><label>Username</label><input type="text" name="username" class="arena-form-control" value="{{ current_user.username }}" required></div>
+                        <div class="arena-form-group"><label>Email Address</label><input type="email" name="email" class="arena-form-control" value="{{ current_user.email }}" required></div>
+                        <div class="arena-form-group"><label>Phone Number</label><input type="tel" name="phone" class="arena-form-control" value="{{ current_user.phone or '' }}" placeholder="Enter your phone number"></div>
+                        <div class="arena-form-group"><label>Delivery Address</label><textarea name="address" class="arena-form-control" rows="3" placeholder="Enter your delivery address">{{ current_user.address or '' }}</textarea></div>
+                        <button type="submit" class="btn-arena"><i class="fas fa-save me-2"></i> Update Profile</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="orders-tab" class="profile-content" style="display: none;">
+                <div class="profile-content-panel">
+                    <h4><span class="accent">///</span> My Legacy</h4>
+                    {% if orders %}
+                    {% for order in orders %}
+                    <div class="order-card-glass">
+                        <div class="order-row">
+                            <div class="order-meta"><div class="order-id">Order #{{ order.id }}</div><div class="order-date">{{ order.created_at.strftime('%b %d, %Y') }}</div></div>
+                            <div><span class="order-status status-{{ order.status }}">{{ order.status.replace('_', ' ').title() }}</span></div>
+                            <div class="order-amount">₹{{ '%.2f'|format(order.total_amount) }}</div>
+                            <div class="order-actions">
+                                <a href="{{ url_for('customer.order_confirmation', order_id=order.id) }}" class="btn-arena btn-sm-arena"><i class="fas fa-eye me-1"></i> Details</a>
+                                <a href="{{ url_for('customer.download_invoice', order_id=order.id) }}" class="btn-arena btn-sm-arena" style="background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.1);"><i class="fas fa-file-pdf me-1"></i> Invoice</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon text-gold"><i class="fas fa-trophy"></i></div>
+                        <h5>Your Legacy Awaits</h5>
+                        <p>Your order history is empty. Time to gear up like a champion.</p>
+                        <a href="{{ url_for('product_bp.products') }}" class="btn-arena">Enter The Arena</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="wallet-tab" class="profile-content" style="display: none;">
+                <div class="profile-content-panel">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,0.06);">
+                        <h4 class="mb-0" style="border:none;padding:0;margin:0;"><span class="accent">///</span> Wallet</h4>
+                        <div class="membership-badge-tier"><i class="fas fa-coins"></i> ₹{{ '%.2f'|format(current_user.wallet_balance) }}</div>
+                    </div>
+                    {% if wallet_history %}
+                    <div style="overflow-x:auto;">
+                        <table class="wallet-table">
+                            <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th></tr></thead>
+                            <tbody>
+                                {% for tx in wallet_history %}
+                                <tr>
+                                    <td>{{ tx.created_at.strftime('%d %b, %H:%M') }}</td>
+                                    <td>{{ tx.description }}</td>
+                                    <td>{% if tx.amount > 0 %}<span class="wallet-badge credit">Credit</span>{% else %}<span class="wallet-badge debit">Debit</span>{% endif %}</td>
+                                    <td style="font-weight:700;font-family:var(--font-display);{{ 'color:#22c55e;' if tx.amount > 0 else 'color:var(--victory-red);' }}">{{ '+' if tx.amount > 0 else '' }}{{ '%.2f'|format(tx.amount) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="empty-state"><div class="empty-state-icon"><i class="fas fa-wallet" style="color:var(--metallic-silver);"></i></div><h5>No Transactions Yet</h5><p>Your wallet transaction history will appear here.</p></div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div id="address-tab" class="profile-content" style="display: none;">
+                <div class="profile-content-panel">
+                    <h4><span class="accent">///</span> Address Book</h4>
+                    <div class="address-card-glass">
+                        <h5><i class="fas fa-home me-2 text-gold"></i> Home Address</h5>
+                        <p>{{ current_user.address or "No address provided yet. Update your profile to add one." }}</p>
+                        <button class="btn-arena btn-sm-arena" onclick="showTab('profile', document.querySelector('.profile-menu a'))" style="margin-top:12px;"><i class="fas fa-edit me-1"></i> Edit Profile</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settings-tab" class="profile-content" style="display: none;">
+                <div class="profile-content-panel">
+                    <h4><span class="accent">///</span> Account Settings</h4>
+                    <div class="settings-section">
+                        <h5><i class="fas fa-lock me-2 text-gold"></i> Change Password</h5>
+                        <form action="{{ url_for('customer.change_password') }}" method="POST">
+                            <div class="arena-form-group"><label>Current Password</label><input type="password" name="current_password" class="arena-form-control" required></div>
+                            <div class="arena-form-group"><label>New Password</label><input type="password" name="new_password" class="arena-form-control" required></div>
+                            <div class="arena-form-group"><label>Confirm New Password</label><input type="password" name="confirm_password" class="arena-form-control" required></div>
+                            <button type="submit" class="btn-arena"><i class="fas fa-key me-2"></i> Change Password</button>
+                        </form>
+                    </div>
+                    <div class="settings-section">
+                        <h5><i class="fas fa-bell me-2 text-gold"></i> Notification Preferences</h5>
+                        <div class="arena-checkbox"><input type="checkbox" id="emailNotif" checked><label for="emailNotif">Email me about order updates</label></div>
+                        <div class="arena-checkbox"><input type="checkbox" id="smsNotif"><label for="smsNotif">SMS notifications for delivery</label></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showTab(tabName, el) {
+    var tabs = ['profile', 'orders', 'wallet', 'address', 'settings'];
+    tabs.forEach(function(t) { var tab = document.getElementById(t + '-tab'); if (tab) tab.style.display = 'none'; });
+    var selectedTab = document.getElementById(tabName + '-tab');
+    if (selectedTab) selectedTab.style.display = 'block';
+    var menuItems = document.querySelectorAll('.profile-menu a');
+    menuItems.forEach(function(item) { item.classList.remove('active'); });
+    if (el) el.classList.add('active');
+    if (typeof gsap !== 'undefined' && selectedTab) {
+        gsap.fromTo(selectedTab, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' });
+    }
+}
+</script>
+{% endblock %}
+"""
+
+target = os.path.join(os.getcwd(), 'templates', 'shop', 'profile.html')
+with open(target, 'w', encoding='utf-8') as f:
+    f.write(content.lstrip('\n'))
+
+print(f'profile.html written: {os.path.getsize(target)} bytes')

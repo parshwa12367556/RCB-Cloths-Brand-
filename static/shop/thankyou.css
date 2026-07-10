@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+}
+
+.navbar {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.navbar-brand,
+.nav-link {
+    color: #222222 !important;
+}
+
+.btn-rcb-red {
+    background-color: #F4B400 !important;
+    color: #222222 !important;
+    border: none !important;
+    font-weight: 700 !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-rcb-red:hover {
+    background-color: #d99f00 !important;
+}
+
+.thankyou-section {
+    padding: 80px 0;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+}
+
+.thankyou-card {
+    background: white;
+    border-radius: 20px;
+    padding: 50px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.thankyou-icon {
+    font-size: 5rem;
+    color: #D1121B;
+    margin-bottom: 20px;
+    animation: bounce 1s ease;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.btn-home {
+    background-color: #D1121B;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s;
+    margin: 0 10px;
+}
+
+.btn-home:hover {
+    background-color: #b50f16;
+    transform: translateY(-2px);
+}
+
+.btn-shop {
+    background-color: #F4B400;
+    color: #222;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s;
+    margin: 0 10px;
+}
+
+.btn-shop:hover {
+    background-color: #ffcd39;
+    transform: translateY(-2px);
+}
+
+footer {
+    background-color: #343a40;
+    color: white;
+    padding: 40px 0 20px;
+    margin-top: 50px;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-link {
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #F4B400 !important;
+    transform: scale(1.05);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+}
+
+.btn-success {
+    background: linear-gradient(45deg, #D1121B, #F4B400);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(45deg, #F4B400, #D1121B);
+}

@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@800;900&family=Inter:wght@400;700&display=swap');
+
+:root {
+    --bg-dark: #08090B; /* Arena Black */
+    --matte-black: #15171C;
+    --victory-red: #D90429;
+    --championship-gold: #F4B400;
+    --electric-blue: #0066FF;
+    --glass-bg: rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.12);
+    --text-white: #F8FAFC;
+    --purple-accent: #a855f7;
+    --transition-premium: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* --- ANIMATED BACKGROUND --- */
+.blob-container {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.blob {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    filter: blur(100px);
+    opacity: 0.05;
+    border-radius: 50%;
+    animation: drift 20s infinite alternate ease-in-out;
+}
+
+.blob-1 { background: var(--victory-red); top: -10%; left: -10%; }
+.blob-2 { background: var(--championship-gold); bottom: -10%; right: -10%; animation-delay: -5s; opacity: 0.1; }
+.blob-3 { background: var(--victory-red); top: 40%; left: 30%; animation-delay: -12s; width: 400px; height: 400px; opacity: 0.1; }
+
+@keyframes drift {
+    0% { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(100px, 50px) scale(1.1); }
+}
+
+/* --- HEADER --- */
+.premium-header {
+    padding: 1.5rem 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    background: rgba(11, 11, 12, 0.8);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo-aether {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: 4px;
+    background: linear-gradient(to right, #fff, var(--championship-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* --- STEP TRACKER --- */
+.step-tracker {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 2.5rem 0;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.4);
+}
+
+.step.active { color: var(--victory-red); }
+.step-dot { 
+    width: 8px; height: 8px; border-radius: 50%; background: currentColor;
+    box-shadow: 0 0 20px var(--victory-red);
+}
+
+/* --- LAYOUT --- */
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 4rem;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 8% 5rem;
+}
+
+/* --- GLASS CARDS --- */
+.glass-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: 2rem;
+    padding: 3rem;
+    box-shadow: 0 12px 24px -8px rgba(0,0,0,0.05);
+    transition: var(--transition-premium);
+}
+
+.glass-card:hover { border-color: var(--victory-red); }
+
+h2 { font-family: 'Bebas Neue', sans-serif; font-weight: 400; font-size: 2rem; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 2px; }
+
+/* --- INPUT FIELDS --- */
+.premium-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    padding: 1.2rem;
+    color: #fff;
+    font-size: 0.95rem;
+    transition: var(--transition-premium);
+    margin-bottom: 1.5rem;
+}
+
+.premium-input:focus {
+    outline: none;
+    border-color: var(--victory-red);
+    background: rgba(217, 4, 41, 0.05);
+    box-shadow: 0 0 30px rgba(217, 4, 41, 0.15);
+}
+
+/* --- 3D CREDIT CARD --- */
+.card-visual {
+    perspective: 1200px;
+    height: 220px;
+    margin-bottom: 2.5rem;
+}
+
+.card-inner {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-inner.flipped { transform: rotateY(180deg); }
+
+.card-front, .card-back {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    display: flex; flex-direction: column; justify-content: space-between;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.card-front {
+    background: linear-gradient(135deg, #1a1a1c 0%, #000 100%);
+    border: 1px solid rgba(244, 180, 0, 0.3); /* Championship Gold Border */
+}
+
+.card-back {
+    background: #08090B;
+    transform: rotateY(180deg);
+}
+
+/* --- ORDER SUMMARY --- */
+.summary-item {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.item-icon {
+    width: 64px; height: 64px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.pricing-row {
+    display: flex; justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    opacity: 0.6;
+}
+
+.total-row {
+    display: flex; justify-content: space-between;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.final-amount {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--championship-gold);
+    text-shadow: 0 0 40px rgba(244, 180, 0, 0.3);
+    font-family: 'Bebas Neue', sans-serif;
+}
+
+/* --- BUTTONS --- */
+.btn-premium {
+    width: 100%;
+    padding: 1.4rem;
+    border-radius: 1.2rem;
+    border: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: var(--transition-premium);
+    display: flex; align-items: center; justify-content: center; gap: 1rem;
+}
+
+.btn-secure {
+    background: linear-gradient(135deg, #D90429, #F4B400);
+    color: #fff;
+    box-shadow: 0 20px 40px rgba(217, 4, 41, 0.3);
+}
+
+.btn-secure:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px rgba(217, 4, 41, 0.5);
+}
+
+.btn-rcb-red:hover {
+    background-color: #d99f00 !important;
+}
+
+@media (max-width: 1024px) { .checkout-grid { grid-template-columns: 1fr; } }

@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue;&family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --arena-black:#08090B; --victory-red:#D90429; --electric-blue:#0066FF; --champ-gold:#F4B400; --ice-white:#F8FAFC; --silver:#BFC7D5; }
+body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at top left, rgba(217,4,41,0.18), transparent 36%), radial-gradient(circle at bottom right, rgba(0,102,255,0.18), transparent 42%), linear-gradient(140deg, #08090B 0%, #11161f 45%, #08090B 100%); color: var(--ice-white); min-height: 100vh; }
+.navbar { background: rgba(8,9,11,0.88) !important; backdrop-filter: blur(14px); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.nav-link, .navbar-brand { color: var(--ice-white) !important; }
+.page-header { position: relative; overflow: hidden; padding: 88px 0 56px; background: linear-gradient(135deg, rgba(217,4,41,0.22), rgba(0,102,255,0.18)), rgba(8,9,11,0.95); border-bottom: 1px solid rgba(255,255,255,0.08); }
+.page-header::before, .page-header::after { content:''; position:absolute; width:240px; height:240px; filter:blur(70px); opacity:0.18; border-radius:999px; }
+.page-header::before { top:-60px; left:-60px; background: var(--victory-red); }
+.page-header::after { right:-80px; bottom:-80px; background: var(--electric-blue); }
+.page-header h1 { font-family: 'Bebas Neue', sans-serif; text-transform: uppercase; letter-spacing: 0.18em; font-size: clamp(3rem, 8vw, 5.2rem); }
+.page-header p { color: var(--silver); max-width: 700px; }
+.order-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 26px; box-shadow: 0 18px 40px rgba(0,0,0,0.35); overflow: hidden; backdrop-filter: blur(16px); transition: transform .35s ease, border-color .35s ease; }
+.order-card:hover { transform: translateY(-6px); border-color: rgba(244,180,0,0.42); }
+.order-header { background: rgba(255,255,255,0.05); padding: 18px 18px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.order-body { padding: 18px; }
+.order-item { display:flex; align-items:center; gap:14px; padding:10px 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.order-item:last-child { border-bottom: none; }
+.order-item-image { width: 68px; height: 68px; object-fit: cover; border-radius: 16px; border: 1px solid rgba(255,255,255,0.12); }
+.order-status { display:inline-block; padding:7px 12px; border-radius:999px; font-size:0.78rem; font-weight:800; letter-spacing:0.14em; text-transform: uppercase; }
+.status-pending { background: rgba(244,180,0,0.14); color: #ffe79a; }
+.status-processing { background: rgba(0,102,255,0.14); color: #bcd5ff; }
+.status-shipped { background: rgba(217,4,41,0.18); color: #ffc2cd; }
+.status-delivered { background: rgba(183,255,0,0.14); color: #dcffaf; }
+.btn-outline-success, .btn-outline-danger { border-radius: 999px; color: var(--ice-white); border-color: rgba(255,255,255,0.16); }
+.btn-outline-success:hover, .btn-outline-danger:hover { transform: translateY(-2px); }
+footer { background: rgba(8,9,11,0.96); color: var(--silver); border-top: 1px solid rgba(255,255,255,0.08); margin-top: 46px; padding: 40px 0 18px; }
+footer a { color: var(--silver); text-decoration: none; }
+footer a:hover { color: var(--champ-gold); }
+@media (max-width: 768px) { .order-item { flex-direction: column; align-items:flex-start; } }

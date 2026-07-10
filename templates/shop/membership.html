@@ -1,0 +1,85 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}The Arena Club — ARENA Sports Luxury{% endblock %}
+
+{% block extra_css %}
+<style>
+    .membership-hero-section {
+        min-height: 70vh;
+        background: radial-gradient(circle at center, rgba(217,4,41,0.15), transparent 70%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+    .tier-card {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 32px;
+        padding: 40px;
+        height: 100%;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .tier-card:hover { transform: translateY(-15px); border-color: var(--championship-gold); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="membership-hero-section">
+    <div class="container">
+        <span class="membership-badge badge-gold mb-3">Community Elite</span>
+        <h1 class="giant-title" style="font-size:clamp(3rem,8vw,6rem);">THE <span class="text-gold">ARENA</span> CLUB</h1>
+        <p class="lead opacity-75 mx-auto" style="max-width:600px;">Transform your support into a lifestyle. Join the inner circle of the global fan army.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="tier-card">
+                <span class="membership-badge badge-silver mb-3">Silver</span>
+                <h3 style="font-family:var(--font-display);letter-spacing:2px;">THE CHALLENGER</h3>
+                <ul class="list-unstyled mt-4 text-muted-arena">
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> 10% Welcome Discount</li>
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> Birthday Rewards</li>
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> Standard Early Access</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="tier-card" style="border-color:var(--championship-gold);background:rgba(244,180,0,0.05);">
+                <span class="membership-badge badge-gold mb-3">Gold</span>
+                <h3 style="font-family:var(--font-display);letter-spacing:2px;">THE ROYAL</h3>
+                <ul class="list-unstyled mt-4">
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> 15% Member Discount</li>
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> Exclusive Gold Drop Access</li>
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> 24h Early Access</li>
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> Free Express Shipping</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="tier-card">
+                <span class="membership-badge badge-platinum mb-3">Platinum</span>
+                <h3 style="font-family:var(--font-display);letter-spacing:2px;">THE LEGEND</h3>
+                <ul class="list-unstyled mt-4 text-muted-arena">
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> 20% Lifetime Discount</li>
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> VIP Matchday Invites</li>
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> Personal Stylist Access</li>
+                    <li class="mb-2"><i class="fas fa-check text-gold me-2"></i> Signed Merchandise Drops</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <h2 class="mb-4" style="font-family:var(--font-sports);font-size:clamp(1.5rem,4vw,2.5rem);letter-spacing:4px;">READY TO START YOUR JOURNEY?</h2>
+        {% if current_user.is_authenticated %}
+            <button class="btn-arena px-5 py-3">Upgrade My Tier</button>
+        {% else %}
+            <a href="{{ url_for('customer.register') }}" class="btn-arena px-5 py-3">Join the Club</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

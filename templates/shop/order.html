@@ -1,0 +1,100 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}My Orders — ARENA Sports Luxury{% endblock %}
+
+{% block extra_css %}
+<style>
+    .order-card-glass {
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 24px;
+        margin-bottom: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .order-card-glass:hover {
+        border-color: var(--championship-gold);
+        transform: translateY(-3px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .order-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .order-body { padding: 20px 24px; }
+    .order-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .order-item:last-child { border-bottom: none; }
+    .order-item-image { width: 60px; height: 60px; border-radius: 16px; object-fit: cover; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <p class="eyebrow text-uppercase mb-2" style="letter-spacing:4px;color:var(--championship-gold);">Arena Journey</p>
+        <h1>YOUR ARENA JOURNEY.</h1>
+        <p>Track every championship delivery, from matchday prep to victory at your door.</p>
+    </div>
+</div>
+
+<div class="container">
+    {% if orders %}
+    {% for order in orders %}
+    <div class="order-card-glass">
+        <div class="order-header">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <strong style="font-family:var(--font-display);letter-spacing:1px;">ORDER #{{ order.id }}</strong>
+                    <div><small class="text-muted-arena">{{ order.created_at.strftime('%b %d, %Y') }}</small></div>
+                </div>
+                <div class="col-md-3">
+                    <span class="order-status status-{{ order.status.lower() }}">{{ order.status.capitalize() }}</span>
+                    <div class="mt-2">
+                        <a href="{{ url_for('customer.track_order', id=order.tracking_id) }}" class="btn-outline-arena" style="padding:6px 14px;font-size:0.65rem;text-decoration:none;"><i class="fas fa-search-location me-1"></i> Track: {{ order.tracking_id }}</a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <strong class="product-price" style="font-size:1.2rem;">₹{{ "%.2f"|format(order.total_amount) }}</strong>
+                </div>
+                <div class="col-md-3 text-md-end d-flex flex-column align-items-end gap-2 mt-3 mt-md-0">
+                    <a href="{{ url_for('customer.order_confirmation', order_id=order.id) }}" class="btn-arena btn-sm-arena" style="text-decoration:none;width:100%;text-align:center;justify-content:center;">View Details</a>
+                    <a href="{{ url_for('customer.download_invoice', order_id=order.id) }}" class="btn-outline-arena btn-sm-arena" style="text-decoration:none;width:100%;text-align:center;justify-content:center;"><i class="fas fa-file-pdf me-1"></i> Invoice</a>
+                </div>
+            </div>
+        </div>
+        <div class="order-body">
+            {% for item in order.items %}
+            <div class="order-item">
+                <img src="{% if item.product.image %}{% if item.product.image.startswith('http') %}{{ item.product.image }}{% else %}{{ url_for('static', filename='images/products/' + item.product.image) }}{% endif %}{% else %}https://via.placeholder.com/60x60?text=Product{% endif %}"
+                    class="order-item-image" alt="{{ item.product.name }}">
+                <div class="flex-grow-1">
+                    <h6 class="mb-1" style="font-family:var(--font-display);font-weight:700;text-transform:uppercase;letter-spacing:1px;">{{ item.product.name }}</h6>
+                    <small class="text-muted-arena">Quantity: {{ item.quantity }}</small>
+                </div>
+                <div class="text-end">
+                    <strong class="product-price" style="font-size:1rem;">₹{{ "%.2f"|format(item.price * item.quantity) }}</strong>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="mt-3">
+                <small class="text-muted-arena"><i class="fas fa-map-marker-alt me-1"></i> {{ order.shipping_address }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="empty-cart-card text-center" style="margin:60px 0;">
+        <div class="mb-4"><i class="fas fa-trophy fa-4x text-gold" style="filter:drop-shadow(0 0 15px rgba(244,180,0,0.3));"></i></div>
+        <h3 class="fw-bold mb-3">No Championship Orders Yet</h3>
+        <p class="text-muted-arena mb-5">Your arena journey begins with your first drop.</p>
+        <a href="{{ url_for('product_bp.products') }}" class="btn-arena">Enter The Arena</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

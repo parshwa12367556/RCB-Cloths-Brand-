@@ -1,0 +1,31 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Our Legacy — ARENA Sports Luxury{% endblock %}
+
+{% block content %}
+<section class="hero-section" style="min-height:70vh;">
+    <div class="container position-relative" style="z-index:2;">
+        <div class="row align-items-center min-vh-50" style="padding-top:80px;">
+            <div class="col-lg-7">
+                <span class="text-gold fw-bold mb-3 d-block" style="letter-spacing:4px;">THE LEGACY // BORN FOR THE STADIUM</span>
+                <h1 class="giant-title">NOT JUST A JERSEY.<br><span style="color:var(--victory-red);">A LEGACY.</span></h1>
+                <p class="lead opacity-75 mb-5" style="max-width:600px;">We built this platform for fans who live every second of the game. More than fashion. This is sports identity.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('product_bp.products') }}" class="btn-arena">ENTER THE ARENA</a>
+                    <a href="#story" class="btn-outline-arena">EXPLORE</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="story" class="py-5" style="background:rgba(0,0,0,0.3);">
+    <div class="container py-5">
+        <div class="text-center mb-5"><h2 class="giant-title" style="font-size:clamp(2rem,5vw,3rem);">OUR <span class="text-gold">MISSION</span></h2></div>
+        <div class="row g-4 stagger-children">
+            <div class="col-md-4"><div class="glass-card p-4 h-100 text-center"><i class="fas fa-globe-americas fa-3x text-gold mb-3"></i><h4>UNITE FANS</h4><p class="opacity-50">Connecting millions through the threads of victory across every continent.</p></div></div>
+            <div class="col-md-4"><div class="glass-card p-4 h-100 text-center"><i class="fas fa-crown fa-3x text-gold mb-3"></i><h4>ELITE QUALITY</h4><p class="opacity-50">Merging high-performance stadium tech with luxury streetwear aesthetics.</p></div></div>
+            <div class="col-md-4"><div class="glass-card p-4 h-100 text-center"><i class="fas fa-bolt fa-3x text-gold mb-3"></i><h4>STADIUM ENERGY</h4><p class="opacity-50">Capturing raw adrenaline from every sport in every design.</p></div></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

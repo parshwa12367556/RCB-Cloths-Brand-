@@ -1,0 +1,60 @@
+{% extends "layout/arena_base.html" %}
+{% block title %}Notifications — ARENA Sports Luxury{% endblock %}
+
+{% block extra_css %}
+<style>
+    .notification-glass {
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+    }
+    .notification-glass:hover {
+        border-color: var(--championship-gold);
+        transform: translateY(-3px);
+    }
+    .notification-glass.unread {
+        border-left: 3px solid var(--victory-red);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="fas fa-bell me-3 text-gold"></i>DUGOUT <span class="text-gold">UPDATES</span></h1>
+        <p>Stay updated with your orders and exclusive offers</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            {% if notifications %}
+                {% for notification in notifications %}
+                <div class="notification-glass {% if not notification.is_read %}unread{% endif %}">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="mb-1" style="font-family:var(--font-display);letter-spacing:1px;"><i class="fas fa-bell text-gold me-2"></i>{{ notification.title }}</h6>
+                            <p class="mb-0 text-muted-arena" style="font-size:0.9rem;">{{ notification.message }}</p>
+                        </div>
+                        <small class="text-muted-arena" style="white-space:nowrap;">{{ notification.created_at.strftime('%b %d, %H:%M') }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-4" style="font-size:6rem;color:rgba(244,180,0,0.1);"><i class="fas fa-bell-slash"></i></div>
+                    <h4 class="fw-bold" style="font-family:var(--font-display);letter-spacing:2px;">NO NEW MESSAGES FROM THE DUGOUT</h4>
+                    <p class="text-muted-arena mb-4">Stay tuned for the latest drops and exclusive member updates.</p>
+                    <a href="{{ url_for('product_bp.products') }}" class="btn-arena">Explore Latest Drops</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
